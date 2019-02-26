@@ -1,5 +1,5 @@
 package main.DataObjects;
 
-public class Order {
+public class Trade {
 
 }

@@ -1,12 +1,12 @@
-package test;
+package test.Utils;
 
-public class Utils {
+public class File {
 
-    static String readTestFile(String filename) {
+    public static String readTestFile(String filename) {
        throw new UnsupportedOperationException("Note implemented");
     }
 
-    static String writeTestFile(String filename, String contents) {
+    public static String writeTestFile(String filename, String contents) {
         throw new UnsupportedOperationException("Note implemented");
     }
 
