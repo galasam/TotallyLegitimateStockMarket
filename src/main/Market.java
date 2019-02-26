@@ -7,6 +7,6 @@ import main.DataObjects.Trade;
 public class Market {
 
     public static List<Trade> getResultingTrades(List<Order> orders) {
-        throw new UnsupportedOperationException("Note implemented");
+        throw new UnsupportedOperationException("Not implemented");
     }
 }
