@@ -2,33 +2,30 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import main.DataObjects.Order.TIME_IN_FORCE;
-import main.DataStructures.LimitOrderQueue;
-import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.Order.DIRECTION;
 import main.DataObjects.Trade;
+import main.DataStructures.TickerQueueGroup;
 
 class Market {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
     private final List<Trade> trades = new ArrayList<>();
-    private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);
-    private final SortedSet<LimitOrder> buyLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_DECS);
-    private final SortedSet<MarketOrder> buyMarketOrders = new TreeSet<>((a, b) -> a.getOrderId() - b.getOrderId());
-    private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>((a, b) -> a.getOrderId() - b.getOrderId());
+    private final Map<String, TickerQueueGroup> tickerQueues = new TreeMap<>();
 
-    public Market() {
+    Market() {
         LOGGER.finer("Creating Market");
     }
 
-    public void processOrder(Order order) {
+    void processOrder(Order order) {
         LOGGER.finer(String.format("Processing order %s", order.toString()));
         if(order instanceof LimitOrder) {
             processLimitOrder((LimitOrder) order);
@@ -37,21 +34,28 @@ class Market {
         } else {
             throw new UnsupportedOperationException("Order type not specified");
         }
-        LOGGER.finer("Sell Limit Orders: " + sellLimitOrders.toString());
-        LOGGER.finer("Buy Limit Orders: " + buyLimitOrders.toString());
-        LOGGER.finer("Sell Market Orders: " + buyMarketOrders.toString());
-        LOGGER.finer("Sell Market Orders: " + sellMarketOrders.toString());
+        LOGGER.finer("Ticker queues: " + tickerQueues.toString());
         LOGGER.finer("Trades: " + trades.toString());
     }
 
     private void processMarketOrder(MarketOrder marketOrder) {
+        TickerQueueGroup queues = getTickerQueueGroup(marketOrder);
         if (marketOrder.getDirection() == DIRECTION.BUY) {
-            processDirectedMarketOrder(marketOrder, sellLimitOrders, buyMarketOrders);
+            processDirectedMarketOrder(marketOrder, queues.getSellLimitOrders(), queues.getBuyMarketOrders());
         } else if (marketOrder.getDirection() == DIRECTION.SELL) {
-            processDirectedMarketOrder(marketOrder, buyLimitOrders, sellMarketOrders);
+            processDirectedMarketOrder(marketOrder, queues.getBuyLimitOrders(), queues.getSellMarketOrders());
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
+    }
+
+    private TickerQueueGroup getTickerQueueGroup(Order marketOrder) {
+        TickerQueueGroup queues = tickerQueues.get(marketOrder.getTicker());
+        if(queues == null) {
+            queues = new TickerQueueGroup();
+            tickerQueues.put(marketOrder.getTicker(), queues);
+        }
+        return queues;
     }
 
     private void processDirectedMarketOrder(MarketOrder marketOrder,
@@ -96,10 +100,11 @@ class Market {
     }
 
     private void processLimitOrder(LimitOrder limitOrder) {
+        TickerQueueGroup queues = getTickerQueueGroup(limitOrder);
         if (limitOrder.getDirection() == DIRECTION.BUY) {
-            processDirectedLimitOrder(limitOrder, sellMarketOrders, buyLimitOrders, sellLimitOrders);
+            processDirectedLimitOrder(limitOrder, queues.getSellMarketOrders(), queues.getBuyLimitOrders(), queues.getSellLimitOrders());
         } else if (limitOrder.getDirection() == DIRECTION.SELL) {
-            processDirectedLimitOrder(limitOrder, buyMarketOrders, sellLimitOrders, buyLimitOrders);
+            processDirectedLimitOrder(limitOrder, queues.getBuyMarketOrders(), queues.getSellLimitOrders(), queues.getBuyLimitOrders());
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
@@ -156,7 +161,7 @@ class Market {
         }
     }
 
-    public List<Trade> getAllResultingTrades() {
+    List<Trade> getAllResultingTrades() {
         return trades;
     }
 }
