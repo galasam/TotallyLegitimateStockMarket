@@ -19,4 +19,16 @@ public class StopMarketOrder extends MarketOrder implements StopOrder{
     public Order toNonStopOrder() {
         return new MarketOrder(orderId, direction, quantity, timeInForce, ticker);
     }
+
+    @Override
+    public String toString() {
+        return "StopMarketOrder{" +
+            "triggerPrice=" + triggerPrice +
+            ", orderId=" + orderId +
+            ", direction=" + direction +
+            ", quantity=" + quantity +
+            ", timeInForce=" + timeInForce +
+            ", ticker='" + ticker + '\'' +
+            '}';
+    }
 }

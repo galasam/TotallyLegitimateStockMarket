@@ -21,4 +21,17 @@ public class StopLimitOrder extends LimitOrder implements StopOrder {
     public Order toNonStopOrder() {
         return new LimitOrder(orderId, direction, quantity, timeInForce, ticker, limit);
     }
+
+    @Override
+    public String toString() {
+        return "StopLimitOrder{" +
+            "triggerPrice=" + triggerPrice +
+            ", limit=" + limit +
+            ", orderId=" + orderId +
+            ", direction=" + direction +
+            ", quantity=" + quantity +
+            ", timeInForce=" + timeInForce +
+            ", ticker='" + ticker + '\'' +
+            '}';
+    }
 }

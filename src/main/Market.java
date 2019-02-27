@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -11,6 +12,7 @@ import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.Order.DIRECTION;
+import main.DataObjects.StopOrder;
 import main.DataObjects.Trade;
 import main.DataStructures.TickerData;
 
@@ -20,6 +22,7 @@ class Market {
 
     private final List<Trade> trades = new ArrayList<>();
     private final Map<String, TickerData> tickerQueues = new TreeMap<>();
+    private final List<StopOrder> stopOrders = new LinkedList<>();
 
     Market() {
         LOGGER.finer("Creating Market");
@@ -27,7 +30,9 @@ class Market {
 
     void processOrder(Order order) {
         LOGGER.finer(String.format("Processing order %s", order.toString()));
-        if(order instanceof LimitOrder) {
+        if(order instanceof StopOrder) {
+            stopOrders.add((StopOrder) order);
+        } else if(order instanceof LimitOrder) {
             processLimitOrder((LimitOrder) order);
         } else if(order instanceof MarketOrder) {
             processMarketOrder((MarketOrder) order);
@@ -35,6 +40,7 @@ class Market {
             throw new UnsupportedOperationException("Order type not specified");
         }
         LOGGER.finer("Ticker queues: " + tickerQueues.toString());
+        LOGGER.finer("Stop Orders: " + stopOrders.toString());
         LOGGER.finer("Trades: " + trades.toString());
     }
 

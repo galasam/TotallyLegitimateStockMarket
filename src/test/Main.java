@@ -27,7 +27,7 @@ public class Main {
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL);
         LOGGER.addHandler(consoleHandler);
-        LOGGER.setLevel(Level.INFO);
+        LOGGER.setLevel(Level.FINER);
     }
 
     public static void main(String[] args) {
