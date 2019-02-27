@@ -37,13 +37,13 @@ public class CSV {
     private static Order decodeCSVRow(String input) {
         final String[] values = input.split(",");
 
-        final int orderId = Integer.parseInt(values[0]);
-        final String direction = values[2];
-        final int quantity = Integer.parseInt(values[3]);
-        final String type = values[5];
+        final int orderId = Integer.parseInt(values[INPUT_HEADINGS.get("ORDER ID")]);
+        final String direction = values[INPUT_HEADINGS.get("DIRECTION")];
+        final int quantity = Integer.parseInt(values[INPUT_HEADINGS.get("QUANTITY")]);
+        final String type = values[INPUT_HEADINGS.get("TYPE")];
 
         if(type.equals("LIMIT")) {
-            final float limit = Float.parseFloat(values[6]);
+            final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
             return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, limit);
         } else if (type.equals("MARKET")) {
             return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity);
