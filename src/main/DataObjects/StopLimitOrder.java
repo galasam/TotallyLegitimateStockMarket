@@ -1,37 +1,14 @@
 package main.DataObjects;
 
-import com.sun.org.apache.xalan.internal.utils.XMLSecurityManager.Limit;
+public class StopLimitOrder extends StopOrder {
 
-public class StopLimitOrder extends LimitOrder implements StopOrder {
-
-    private float triggerPrice;
-
-    public StopLimitOrder(int orderId, DIRECTION direction, int quantity,
-        TIME_IN_FORCE timeInForce, String ticker, float triggerPrice, float limit) {
-        super(orderId, direction, quantity, timeInForce, ticker, limit);
-        this.triggerPrice = triggerPrice;
+    public StopLimitOrder(LimitOrder limitOrder, float triggerPrice) {
+        super(limitOrder, triggerPrice);
     }
 
-    @Override
-    public float getTriggerPrice() {
-        return triggerPrice;
+    public LimitOrder toNonStopOrder() {
+        return (LimitOrder) readyOrder;
     }
 
-    @Override
-    public Order toNonStopOrder() {
-        return new LimitOrder(orderId, direction, quantity, timeInForce, ticker, limit);
-    }
 
-    @Override
-    public String toString() {
-        return "StopLimitOrder{" +
-            "triggerPrice=" + triggerPrice +
-            ", limit=" + limit +
-            ", orderId=" + orderId +
-            ", direction=" + direction +
-            ", quantity=" + quantity +
-            ", timeInForce=" + timeInForce +
-            ", ticker='" + ticker + '\'' +
-            '}';
-    }
 }

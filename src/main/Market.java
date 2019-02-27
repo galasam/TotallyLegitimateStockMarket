@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import main.DataObjects.Order.TIME_IN_FORCE;
+import main.DataObjects.ReadyOrder;
+import main.DataObjects.ReadyOrder.TIME_IN_FORCE;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
-import main.DataObjects.Order.DIRECTION;
+import main.DataObjects.ReadyOrder.DIRECTION;
 import main.DataObjects.StopOrder;
 import main.DataObjects.Trade;
 import main.DataStructures.TickerData;
@@ -28,7 +29,13 @@ class Market {
         LOGGER.finer("Creating Market");
     }
 
-    void processOrder(Order order) {
+    void completeTimestep(Order order) {
+        LOGGER.finer("Processing Triggered Stop Orders");
+        processTriggeredStopOrders();
+        processOrder(order);
+    }
+
+    private void processOrder(Order order) {
         LOGGER.finer(String.format("Processing order %s", order.toString()));
         if(order instanceof StopOrder) {
             stopOrders.add((StopOrder) order);
@@ -44,6 +51,24 @@ class Market {
         LOGGER.finer("Trades: " + trades.toString());
     }
 
+    private void processTriggeredStopOrders() {
+        stopOrders.stream()
+            .filter(this::isStopLossTriggered)
+            .map(x -> x.toNonStopOrder())
+            .forEach(this::processOrder);
+    }
+
+    private boolean isStopLossTriggered(StopOrder stopOrder) {
+        ReadyOrder readyOrder = stopOrder.getReadyOrder();
+        if(readyOrder.getDirection().equals(DIRECTION.BUY)) {
+            return stopOrder.getTriggerPrice() <= getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
+        } else if(readyOrder.getDirection().equals(DIRECTION.SELL)) {
+            return stopOrder.getTriggerPrice() >= getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
+    }
+
     private void processMarketOrder(MarketOrder marketOrder) {
         TickerData tickerData = getTickerQueueGroup(marketOrder);
         if (marketOrder.getDirection() == DIRECTION.BUY) {
@@ -57,7 +82,7 @@ class Market {
         }
     }
 
-    private TickerData getTickerQueueGroup(Order marketOrder) {
+    private TickerData getTickerQueueGroup(ReadyOrder marketOrder) {
         TickerData queues = tickerQueues.get(marketOrder.getTicker());
         if(queues == null) {
             queues = new TickerData();
@@ -85,7 +110,7 @@ class Market {
         }
     }
 
-    private void makeTrade(Order a, Order b, float limit, TickerData ticketData) {
+    private void makeTrade(ReadyOrder a, ReadyOrder b, float limit, TickerData ticketData) {
         ticketData.setLastExecutedTradePrice(limit);
         if(a.getDirection().equals(DIRECTION.BUY)) {
             Trade trade = new Trade(

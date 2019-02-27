@@ -1,6 +1,6 @@
 package main.DataObjects;
 
-public class LimitOrder extends Order {
+public class LimitOrder extends ReadyOrder {
 
     public float getLimit() {
         return limit;

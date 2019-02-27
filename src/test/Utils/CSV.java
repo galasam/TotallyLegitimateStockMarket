@@ -1,6 +1,5 @@
 package test.Utils;
 
-import java.awt.geom.FlatteningPathIterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,11 +8,10 @@ import java.util.stream.Stream;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
-import main.DataObjects.Order.DIRECTION;
-import main.DataObjects.Order.TIME_IN_FORCE;
+import main.DataObjects.ReadyOrder.DIRECTION;
+import main.DataObjects.ReadyOrder.TIME_IN_FORCE;
 import main.DataObjects.StopLimitOrder;
 import main.DataObjects.StopMarketOrder;
-import main.DataObjects.StopOrder;
 import main.DataObjects.Trade;
 
 public class CSV {
@@ -61,11 +59,13 @@ public class CSV {
                 limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
                 float triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
                 return new StopLimitOrder(
-                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, triggerPrice, limit);
+                    new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit),
+                    triggerPrice);
             case "STOP-MARKET":
                 triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
                 return new StopMarketOrder(
-                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, triggerPrice);
+                    new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker),
+                    triggerPrice);
 
             default:
                 throw new UnsupportedOperationException(" Unsupported order type");

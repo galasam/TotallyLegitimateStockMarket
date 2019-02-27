@@ -1,6 +1,6 @@
 package main.DataObjects;
 
-public class MarketOrder extends Order{
+public class MarketOrder extends ReadyOrder{
 
 
     public MarketOrder(int orderId, DIRECTION direction, int quantity,
