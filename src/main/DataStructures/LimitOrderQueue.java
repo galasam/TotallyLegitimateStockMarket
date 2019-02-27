@@ -4,11 +4,11 @@ import java.util.Comparator;
 import java.util.TreeSet;
 import main.DataObjects.LimitOrder;
 
-public class LimitOrderQueue extends TreeSet<LimitOrder> {
+class LimitOrderQueue extends TreeSet<LimitOrder> {
 
-    public enum SORTING_METHOD {PRICE_ASC, PRICE_DECS};
+    public enum SORTING_METHOD {PRICE_ASC, PRICE_DECS}
 
-    private static final Comparator<LimitOrder> price_asc = (a, b) -> {
+    private static final Comparator<LimitOrder> price_asc = (LimitOrder a, LimitOrder b) -> {
         float comp = a.getLimit() - b.getLimit();
         if(comp == 0) {
             return a.getOrderId() - b.getOrderId();
@@ -30,7 +30,7 @@ public class LimitOrderQueue extends TreeSet<LimitOrder> {
         }
     };
 
-    public LimitOrderQueue(SORTING_METHOD method) {
+    LimitOrderQueue(SORTING_METHOD method) {
         super(getComparator(method));
     }
 

@@ -146,8 +146,10 @@ class Market {
         if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
             LOGGER.finest("Time in force is GTC so add to queue");
             sameTypeLimitOrders.add(limitOrder);
-        } else {
+        } else if (limitOrder.getTimeInForce().equals(TIME_IN_FORCE.FOK)) {
             LOGGER.finest("Time in force is FOK so drop");
+        } else {
+            throw new UnsupportedOperationException("TIME IN FORCE mode not supported");
         }
     }
 

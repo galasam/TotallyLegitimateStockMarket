@@ -14,7 +14,7 @@ import main.DataObjects.Trade;
 
 public class CSV {
 
-    final static Map<String, Integer> INPUT_HEADINGS = new TreeMap<>();
+    private final static Map<String, Integer> INPUT_HEADINGS = new TreeMap<>();
     static {
         INPUT_HEADINGS.put("ORDER ID", 0);
         INPUT_HEADINGS.put("GROUP ID", 1);
@@ -26,7 +26,7 @@ public class CSV {
         INPUT_HEADINGS.put("TIME IN FORCE", 7);
         INPUT_HEADINGS.put("TRIGGER PRICE", 9);
     }
-    final static String OUTPUT_HEADER = String.join(",", "BUY ORDER", "SELL ORDER", "MATCH QTY", "MATCH PRICE");
+    private final static String OUTPUT_HEADER = String.join(",", "BUY ORDER", "SELL ORDER", "MATCH QTY", "MATCH PRICE");
 
     public static List<Order> decodeCSV(List<String> input) {
         return input.stream()
@@ -45,13 +45,16 @@ public class CSV {
         final TIME_IN_FORCE tif = TIME_IN_FORCE.valueOf(values[INPUT_HEADINGS.get("TIME IN FORCE")]);
         final String ticker = values[INPUT_HEADINGS.get("TICKER")];
 
-        if(type.equals("LIMIT")) {
-            final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
-            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit);
-        } else if (type.equals("MARKET")) {
-            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker);
-        } else {
-            throw new UnsupportedOperationException(" Unsupported order type");
+        switch (type) {
+            case "LIMIT":
+                final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
+                return new LimitOrder(
+                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit);
+            case "MARKET":
+                return new MarketOrder(
+                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker);
+            default:
+                throw new UnsupportedOperationException(" Unsupported order type");
         }
     }
 

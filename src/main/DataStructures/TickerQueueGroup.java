@@ -1,16 +1,20 @@
 package main.DataStructures;
 
+import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
+import main.DataObjects.Order;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 
 public class TickerQueueGroup {
     private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);
     private final SortedSet<LimitOrder> buyLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_DECS);
-    private final SortedSet<MarketOrder> buyMarketOrders = new TreeSet<>((a, b) -> a.getOrderId() - b.getOrderId());
-    private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>((a, b) -> a.getOrderId() - b.getOrderId());
+    private final SortedSet<MarketOrder> buyMarketOrders = new TreeSet<>(
+        Comparator.comparingInt(Order::getOrderId));
+    private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>(
+        Comparator.comparingInt(Order::getOrderId));
 
     public SortedSet<LimitOrder> getSellLimitOrders() {
         return sellLimitOrders;

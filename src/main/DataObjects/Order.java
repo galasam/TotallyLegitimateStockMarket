@@ -2,8 +2,8 @@ package main.DataObjects;
 
 public class Order {
 
-    public enum DIRECTION {SELL, BUY};
-    public enum TIME_IN_FORCE {FOK, GTC};
+    public enum DIRECTION {SELL, BUY}
+    public enum TIME_IN_FORCE {FOK, GTC}
 
     public int getOrderId() {
         return orderId;
@@ -25,13 +25,13 @@ public class Order {
         return ticker;
     }
 
-    protected final int orderId;
+    final int orderId;
     protected final DIRECTION direction;
     protected final int quantity;
-    protected final TIME_IN_FORCE timeInForce;
+    final TIME_IN_FORCE timeInForce;
     protected final String ticker;
 
-    public Order(int orderId, DIRECTION direction, int quantity,
+    Order(int orderId, DIRECTION direction, int quantity,
         TIME_IN_FORCE timeInForce, String ticker) {
         this.orderId = orderId;
         this.direction = direction;
