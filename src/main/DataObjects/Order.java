@@ -21,6 +21,10 @@ public class Order {
         return timeInForce;
     }
 
+    public String getTicker() {
+        return ticker;
+    }
+
     protected final int orderId;
     protected final DIRECTION direction;
     protected final int quantity;
