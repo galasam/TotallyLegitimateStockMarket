@@ -39,11 +39,11 @@ class Market {
     }
 
     private void processMarketOrder(MarketOrder marketOrder) {
-        TickerData queues = getTickerQueueGroup(marketOrder);
+        TickerData tickerData = getTickerQueueGroup(marketOrder);
         if (marketOrder.getDirection() == DIRECTION.BUY) {
-            processDirectedMarketOrder(marketOrder, queues.getSellLimitOrders(), queues.getBuyMarketOrders());
+            processDirectedMarketOrder(marketOrder, tickerData.getSellLimitOrders(), tickerData.getBuyMarketOrders());
         } else if (marketOrder.getDirection() == DIRECTION.SELL) {
-            processDirectedMarketOrder(marketOrder, queues.getBuyLimitOrders(), queues.getSellMarketOrders());
+            processDirectedMarketOrder(marketOrder, tickerData.getBuyLimitOrders(), tickerData.getSellMarketOrders());
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
@@ -78,6 +78,7 @@ class Market {
     }
 
     private void makeTrade(Order a, Order b, float limit) {
+
         if(a.getDirection().equals(DIRECTION.BUY)) {
             Trade trade = new Trade(
                 a.getOrderId(),
@@ -100,11 +101,11 @@ class Market {
     }
 
     private void processLimitOrder(LimitOrder limitOrder) {
-        TickerData queues = getTickerQueueGroup(limitOrder);
+        TickerData tickerData = getTickerQueueGroup(limitOrder);
         if (limitOrder.getDirection() == DIRECTION.BUY) {
-            processDirectedLimitOrder(limitOrder, queues.getSellMarketOrders(), queues.getBuyLimitOrders(), queues.getSellLimitOrders());
+            processDirectedLimitOrder(limitOrder, tickerData.getSellMarketOrders(), tickerData.getBuyLimitOrders(), tickerData.getSellLimitOrders());
         } else if (limitOrder.getDirection() == DIRECTION.SELL) {
-            processDirectedLimitOrder(limitOrder, queues.getBuyMarketOrders(), queues.getSellLimitOrders(), queues.getBuyLimitOrders());
+            processDirectedLimitOrder(limitOrder, tickerData.getBuyMarketOrders(), tickerData.getSellLimitOrders(), tickerData.getBuyLimitOrders());
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }

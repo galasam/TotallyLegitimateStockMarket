@@ -16,6 +16,16 @@ public class TickerData {
     private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>(
         Comparator.comparingInt(Order::getOrderId));
 
+    private float lastExecutedTradePrice = 0;
+
+    public float getLastExecutedTradePrice() {
+        return lastExecutedTradePrice;
+    }
+
+    public void setLastExecutedTradePrice(float lastExecutedTradePrice) {
+        this.lastExecutedTradePrice = lastExecutedTradePrice;
+    }
+
     public SortedSet<LimitOrder> getSellLimitOrders() {
         return sellLimitOrders;
     }
