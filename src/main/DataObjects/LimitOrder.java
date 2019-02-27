@@ -12,4 +12,13 @@ public class LimitOrder extends Order {
         super(orderId, direction);
         this.limit = limit;
     }
+
+    @Override
+    public String toString() {
+        return "LimitOrder{" +
+            "limit=" + limit +
+            ", orderId=" + orderId +
+            ", direction='" + direction + '\'' +
+            '}';
+    }
 }

@@ -10,11 +10,19 @@ public class Order {
         return direction;
     }
 
-    private final int orderId;
-    private final String direction;
+    protected final int orderId;
+    protected final String direction;
 
     public Order(int orderId, String direction) {
         this.orderId = orderId;
         this.direction = direction;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+            "orderId=" + orderId +
+            ", direction='" + direction + '\'' +
+            '}';
     }
 }
