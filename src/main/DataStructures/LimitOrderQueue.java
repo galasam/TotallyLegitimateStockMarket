@@ -1,4 +1,4 @@
-package main.DataObjects.DataStructures;
+package main.DataStructures;
 
 import java.util.Comparator;
 import java.util.TreeSet;
