@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
+import main.DataObjects.Order.DIRECTION;
 import main.DataObjects.Trade;
 
 public class CSV {
@@ -29,9 +30,9 @@ public class CSV {
 
         if(type.equals("LIMIT")) {
             final float limit = Float.parseFloat(values[6]);
-            return new LimitOrder(orderId, direction,limit);
+            return new LimitOrder(orderId, DIRECTION.valueOf(direction),limit);
         } else if (type.equals("MARKET")) {
-            return new MarketOrder(orderId, direction);
+            return new MarketOrder(orderId, DIRECTION.valueOf(direction));
         } else {
             throw new UnsupportedOperationException(" Unsupported order type");
         }

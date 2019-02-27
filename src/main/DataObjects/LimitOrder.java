@@ -8,7 +8,7 @@ public class LimitOrder extends Order {
 
     private float limit;
 
-    public LimitOrder(int orderId, String direction, float limit) {
+    public LimitOrder(int orderId, DIRECTION direction, float limit) {
         super(orderId, direction);
         this.limit = limit;
     }
