@@ -49,6 +49,7 @@ public class TickerData {
             ", buyLimitOrders=" + buyLimitOrders +
             ", buyMarketOrders=" + buyMarketOrders +
             ", sellMarketOrders=" + sellMarketOrders +
+            ", lastExecutedTradePrice=" + lastExecutedTradePrice +
             '}';
     }
 }
