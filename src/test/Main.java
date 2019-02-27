@@ -3,12 +3,12 @@ package test;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 import main.DataObjects.Order;
 import main.DataObjects.Trade;
 import main.MarketManager;
@@ -33,20 +33,27 @@ public class Main {
     public static void main(String[] args) {
         setupLogger();
         LOGGER.info("Running All Tests in: " + relativeDirectoryOfTestFiles);
-        IntStream.range(1,12).forEach(Main::runTest);
+        int i = 1;
+        while(true) {
+            try {
+                runTest(i);
+            } catch (NoSuchFileException e) {
+                LOGGER.fine(String.format("No such test: %d", i));
+                break;
+            } catch (IOException e) {
+                LOGGER.warning("Could not run test due to IO Exception");
+            }
+            i++;
+        }
+        //IntStream.range(1,12).forEach(Main::runTest);
         //runTest(8);
     }
 
-    private static void runTest(int i) {
-        try {
-            LOGGER.fine(String.format("Running test %d", i));
-            final List<Order> orders = readOrders(i);
-            final List<Trade> trades = MarketManager.getResultingTrades(orders);
-            writeTrades(i, trades);
-        } catch (IOException e) {
-            LOGGER.warning("Could not run test due to IO Exception");
-            e.printStackTrace();
-        }
+    private static void runTest(int i) throws IOException {
+        LOGGER.fine(String.format("Running test %d", i));
+        final List<Order> orders = readOrders(i);
+        final List<Trade> trades = MarketManager.getResultingTrades(orders);
+        writeTrades(i, trades);
     }
 
     private static List<Order> readOrders(int testNumber) throws IOException {
