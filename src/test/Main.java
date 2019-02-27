@@ -19,7 +19,8 @@ public class Main {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
-    private static final String relativeDirectoryOfTestFiles = "test truths/Phase1";
+    private static final int phaseNumber = 1;
+    private static final String relativeDirectoryOfTestFiles = "test truths/Phase" + Integer.toString(phaseNumber);
     private static final String absoluteDirectoryOfTestFiles = Paths.get(System.getProperty("user.dir"), relativeDirectoryOfTestFiles).toString();
 
     private static void setupLogger() {
@@ -48,19 +49,19 @@ public class Main {
         }
     }
 
-    private static List<Order> readOrders(int i) throws IOException {
+    private static List<Order> readOrders(int testNumber) throws IOException {
         LOGGER.fine("Reading Orders from file");
-        final String filename = "input.test1." + Integer.toString(i) + ".csv";
+        final String filename = String.format("input.test%d.%d.csv", phaseNumber, testNumber);
         final String filepath = Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
         final List<String> inputText = File.readTestFile(filepath);
         return CSV.decodeCSV(inputText);
     }
 
-    private static void writeTrades(int i, List<Trade> trades)
+    private static void writeTrades(int testNumber, List<Trade> trades)
         throws FileNotFoundException, UnsupportedEncodingException {
         LOGGER.fine("Writing trades to file");
         final List<String> outputText = CSV.encodeCSV(trades);
-        final String filename = "output.test1." + Integer.toString(i) + ".csv";
+        final String filename = String.format("output.test%d.%d.csv", phaseNumber, testNumber);
         final String filePath = Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
         File.writeTestFile(filePath, outputText);
     }

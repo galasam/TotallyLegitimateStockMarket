@@ -1,7 +1,8 @@
 package test.Utils;
 
-import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import main.DataObjects.LimitOrder;
@@ -12,6 +13,18 @@ import main.DataObjects.Trade;
 
 public class CSV {
 
+    final static Map<String, Integer> INPUT_HEADINGS = new TreeMap<>();
+    static {
+        INPUT_HEADINGS.put("ORDER ID", 0);
+        INPUT_HEADINGS.put("GROUP ID", 1);
+        INPUT_HEADINGS.put("DIRECTION", 2);
+        INPUT_HEADINGS.put("QUANTITY", 3);
+        INPUT_HEADINGS.put("TICKER", 4);
+        INPUT_HEADINGS.put("TYPE", 5);
+        INPUT_HEADINGS.put("LIMIT PRICE", 6);
+        INPUT_HEADINGS.put("TIME IN FORCE", 7);
+        INPUT_HEADINGS.put("TRIGGER PRICE", 9);
+    }
     final static String OUTPUT_HEADER = String.join(",", "BUY ORDER", "SELL ORDER", "MATCH QTY", "MATCH PRICE");
 
     public static List<Order> decodeCSV(List<String> input) {
