@@ -43,12 +43,13 @@ public class CSV {
         final int quantity = Integer.parseInt(values[INPUT_HEADINGS.get("QUANTITY")]);
         final String type = values[INPUT_HEADINGS.get("TYPE")];
         final TIME_IN_FORCE tif = TIME_IN_FORCE.valueOf(values[INPUT_HEADINGS.get("TIME IN FORCE")]);
+        final String ticker = values[INPUT_HEADINGS.get("TICKER")];
 
         if(type.equals("LIMIT")) {
             final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
-            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, limit);
+            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit);
         } else if (type.equals("MARKET")) {
-            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif);
+            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker);
         } else {
             throw new UnsupportedOperationException(" Unsupported order type");
         }

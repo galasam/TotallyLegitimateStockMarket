@@ -25,13 +25,15 @@ public class Order {
     protected final DIRECTION direction;
     protected final int quantity;
     protected final TIME_IN_FORCE timeInForce;
+    protected final String ticker;
 
     public Order(int orderId, DIRECTION direction, int quantity,
-        TIME_IN_FORCE timeInForce) {
+        TIME_IN_FORCE timeInForce, String ticker) {
         this.orderId = orderId;
         this.direction = direction;
         this.quantity = quantity;
         this.timeInForce = timeInForce;
+        this.ticker = ticker;
     }
 
     @Override

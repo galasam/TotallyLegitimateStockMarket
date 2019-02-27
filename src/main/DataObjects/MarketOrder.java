@@ -4,8 +4,8 @@ public class MarketOrder extends Order{
 
 
     public MarketOrder(int orderId, DIRECTION direction, int quantity,
-        TIME_IN_FORCE timeInForce) {
-        super(orderId, direction, quantity, timeInForce);
+        TIME_IN_FORCE timeInForce, String ticker) {
+        super(orderId, direction, quantity, timeInForce, ticker);
     }
 
     @Override
