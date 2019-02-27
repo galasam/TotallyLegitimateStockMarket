@@ -1,5 +1,6 @@
 package test.Utils;
 
+import java.awt.geom.FlatteningPathIterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,6 +11,9 @@ import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.Order.DIRECTION;
 import main.DataObjects.Order.TIME_IN_FORCE;
+import main.DataObjects.StopLimitOrder;
+import main.DataObjects.StopMarketOrder;
+import main.DataObjects.StopOrder;
 import main.DataObjects.Trade;
 
 public class CSV {
@@ -24,7 +28,7 @@ public class CSV {
         INPUT_HEADINGS.put("TYPE", 5);
         INPUT_HEADINGS.put("LIMIT PRICE", 6);
         INPUT_HEADINGS.put("TIME IN FORCE", 7);
-        INPUT_HEADINGS.put("TRIGGER PRICE", 9);
+        INPUT_HEADINGS.put("TRIGGER PRICE", 8);
     }
     private final static String OUTPUT_HEADER = String.join(",", "BUY ORDER", "SELL ORDER", "MATCH QTY", "MATCH PRICE");
 
@@ -47,12 +51,22 @@ public class CSV {
 
         switch (type) {
             case "LIMIT":
-                final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
+                float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
                 return new LimitOrder(
                     orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit);
             case "MARKET":
                 return new MarketOrder(
                     orderId, DIRECTION.valueOf(direction), quantity, tif, ticker);
+            case "STOP-LIMIT":
+                limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
+                float triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
+                return new StopLimitOrder(
+                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, triggerPrice, limit);
+            case "STOP-MARKET":
+                triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
+                return new StopMarketOrder(
+                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, triggerPrice);
+
             default:
                 throw new UnsupportedOperationException(" Unsupported order type");
         }

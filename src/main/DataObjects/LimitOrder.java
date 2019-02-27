@@ -6,7 +6,7 @@ public class LimitOrder extends Order {
         return limit;
     }
 
-    private float limit;
+    float limit;
 
     public LimitOrder(int orderId, DIRECTION direction, int quantity, TIME_IN_FORCE timeInForce, String ticker, float limit) {
         super(orderId, direction, quantity, timeInForce, ticker);
