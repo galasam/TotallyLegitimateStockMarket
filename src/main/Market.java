@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import main.DataObjects.Order.TIME_IN_FORCE;
 import main.DataStructures.LimitOrderQueue;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 import main.DataObjects.LimitOrder;
@@ -57,8 +58,13 @@ class Market {
         SortedSet<LimitOrder> limitOrders, SortedSet<MarketOrder> marketOrders) {
         LOGGER.finest("Checking Limit Order queue");
         if(limitOrders.isEmpty()) {
-            LOGGER.finest("Limit Order queue empty, so adding to market order queue");
-            marketOrders.add(marketOrder);
+            LOGGER.finest("Limit Order queue empty, so check if time in force");
+            if(marketOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
+                LOGGER.finest("Time in force is GTC so add to queue");
+                marketOrders.add(marketOrder);
+            } else {
+                LOGGER.finest("Time in force is FOK so drop");
+            }
         } else {
             LimitOrder limitOrder = limitOrders.first();
             LOGGER.finest("Limit Order queue not empty, so trading with best limit order: " + limitOrder.toString());
@@ -107,8 +113,13 @@ class Market {
         if(marketOrders.isEmpty()) {
             LOGGER.finest("Market Order queue empty, so checking Limit orders");
             if(oppositeTypeLimitOrders.isEmpty()) {
-                LOGGER.finest("Limit Order queue empty, so adding to limit order queue");
-                sameTypeLimitOrders.add(limitOrder);
+                LOGGER.finest("Limit Order queue empty, so check if time in force");
+                if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
+                    LOGGER.finest("Time in force is GTC so add to queue");
+                    sameTypeLimitOrders.add(limitOrder);
+                } else {
+                    LOGGER.finest("Time in force is FOK so drop");
+                }
             } else {
                 LimitOrder otherLimitOrder = oppositeTypeLimitOrders.first();
                 LOGGER.finest("Limit Order queue not empty, so checking if best order matches: " + otherLimitOrder.toString());
@@ -118,8 +129,13 @@ class Market {
                     oppositeTypeLimitOrders.remove(otherLimitOrder);
                     makeTrade(limitOrder, otherLimitOrder, otherLimitOrder.getLimit());
                 } else {
-                    LOGGER.finest("Limits do not match so adding to limit order queue");
-                    sameTypeLimitOrders.add(limitOrder);
+                    LOGGER.finest("Limits do not match, so check if time in force");
+                    if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
+                        LOGGER.finest("Time in force is GTC so add to queue");
+                        sameTypeLimitOrders.add(limitOrder);
+                    } else {
+                        LOGGER.finest("Time in force is FOK so drop");
+                    }
                 }
             }
         } else {
