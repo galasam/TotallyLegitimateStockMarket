@@ -12,12 +12,18 @@ public class Order {
         return direction;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
     protected final int orderId;
     protected final DIRECTION direction;
+    protected final int quantity;
 
-    public Order(int orderId, DIRECTION direction) {
+    public Order(int orderId, DIRECTION direction, int quantity) {
         this.orderId = orderId;
         this.direction = direction;
+        this.quantity = quantity;
     }
 
     @Override

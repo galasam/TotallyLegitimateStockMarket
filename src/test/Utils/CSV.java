@@ -26,13 +26,14 @@ public class CSV {
 
         final int orderId = Integer.parseInt(values[0]);
         final String direction = values[2];
+        final int quantity = Integer.parseInt(values[3]);
         final String type = values[5];
 
         if(type.equals("LIMIT")) {
             final float limit = Float.parseFloat(values[6]);
-            return new LimitOrder(orderId, DIRECTION.valueOf(direction),limit);
+            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, limit);
         } else if (type.equals("MARKET")) {
-            return new MarketOrder(orderId, DIRECTION.valueOf(direction));
+            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity);
         } else {
             throw new UnsupportedOperationException(" Unsupported order type");
         }

@@ -8,8 +8,8 @@ public class LimitOrder extends Order {
 
     private float limit;
 
-    public LimitOrder(int orderId, DIRECTION direction, float limit) {
-        super(orderId, direction);
+    public LimitOrder(int orderId, DIRECTION direction, int quantity, float limit) {
+        super(orderId, direction, quantity);
         this.limit = limit;
     }
 
