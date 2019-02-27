@@ -114,12 +114,7 @@ class Market {
             LOGGER.finest("Market Order queue empty, so checking Limit orders");
             if(oppositeTypeLimitOrders.isEmpty()) {
                 LOGGER.finest("Limit Order queue empty, so check if time in force");
-                if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
-                    LOGGER.finest("Time in force is GTC so add to queue");
-                    sameTypeLimitOrders.add(limitOrder);
-                } else {
-                    LOGGER.finest("Time in force is FOK so drop");
-                }
+                queueIfTimeInForce(limitOrder, sameTypeLimitOrders);
             } else {
                 LimitOrder otherLimitOrder = oppositeTypeLimitOrders.first();
                 LOGGER.finest("Limit Order queue not empty, so checking if best order matches: " + otherLimitOrder.toString());
@@ -130,12 +125,7 @@ class Market {
                     makeTrade(limitOrder, otherLimitOrder, otherLimitOrder.getLimit());
                 } else {
                     LOGGER.finest("Limits do not match, so check if time in force");
-                    if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
-                        LOGGER.finest("Time in force is GTC so add to queue");
-                        sameTypeLimitOrders.add(limitOrder);
-                    } else {
-                        LOGGER.finest("Time in force is FOK so drop");
-                    }
+                    queueIfTimeInForce(limitOrder, sameTypeLimitOrders);
                 }
             }
         } else {
@@ -143,6 +133,16 @@ class Market {
             MarketOrder marketOrder = marketOrders.first();
             marketOrders.remove(marketOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit());
+        }
+    }
+
+    private void queueIfTimeInForce(LimitOrder limitOrder,
+        SortedSet<LimitOrder> sameTypeLimitOrders) {
+        if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
+            LOGGER.finest("Time in force is GTC so add to queue");
+            sameTypeLimitOrders.add(limitOrder);
+        } else {
+            LOGGER.finest("Time in force is FOK so drop");
         }
     }
 
