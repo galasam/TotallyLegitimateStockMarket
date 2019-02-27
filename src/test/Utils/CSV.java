@@ -9,6 +9,7 @@ import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.Order.DIRECTION;
+import main.DataObjects.Order.TIME_IN_FORCE;
 import main.DataObjects.Trade;
 
 public class CSV {
@@ -41,12 +42,13 @@ public class CSV {
         final String direction = values[INPUT_HEADINGS.get("DIRECTION")];
         final int quantity = Integer.parseInt(values[INPUT_HEADINGS.get("QUANTITY")]);
         final String type = values[INPUT_HEADINGS.get("TYPE")];
+        final TIME_IN_FORCE tif = TIME_IN_FORCE.valueOf(values[INPUT_HEADINGS.get("TIME IN FORCE")]);
 
         if(type.equals("LIMIT")) {
             final float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
-            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, limit);
+            return new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, limit);
         } else if (type.equals("MARKET")) {
-            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity);
+            return new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif);
         } else {
             throw new UnsupportedOperationException(" Unsupported order type");
         }
