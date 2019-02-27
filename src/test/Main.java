@@ -33,7 +33,7 @@ public class Main {
     public static void main(String[] args) {
         setupLogger();
         LOGGER.log(Level.FINE, "Test starting");
-        IntStream.range(1,11).forEach(Main::runTest);
+        IntStream.range(1,12).forEach(Main::runTest);
     }
 
     private static void runTest(int i) {

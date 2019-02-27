@@ -30,25 +30,94 @@ class Market {
     public void processOrder(Order order) {
         LOGGER.finer(String.format("Processing order %s", order.toString()));
         if(order instanceof LimitOrder) {
-            if (order.getDirection() == DIRECTION.BUY) {
-                
-            } else if (order.getDirection() == DIRECTION.SELL) {
-
-            } else {
-                throw new UnsupportedOperationException("Order direction not specified");
-            }
+            processLimitOrder((LimitOrder) order);
         } else if(order instanceof MarketOrder) {
-            if (order.getDirection() == DIRECTION.BUY) {
-
-            } else if (order.getDirection() == DIRECTION.SELL) {
-
-            } else {
-                throw new UnsupportedOperationException("Order direction not specified");
-            }
+            processMarketOrder((MarketOrder) order);
         } else {
             throw new UnsupportedOperationException("Order type not specified");
         }
 
+    }
+
+    private void processMarketOrder(MarketOrder marketOrder) {
+        if (marketOrder.getDirection() == DIRECTION.BUY) {
+            processDirectedMarketOrder(marketOrder, sellLimitOrders, buyMarketOrders);
+        } else if (marketOrder.getDirection() == DIRECTION.SELL) {
+            processDirectedMarketOrder(marketOrder, buyLimitOrders, sellMarketOrders);
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
+    }
+
+    private void processDirectedMarketOrder(MarketOrder marketOrder,
+        SortedSet<LimitOrder> limitOrders, SortedSet<MarketOrder> marketOrders) {
+        if(limitOrders.isEmpty()) {
+            marketOrders.add(marketOrder);
+        } else {
+            LimitOrder limitOrder = limitOrders.first();
+            limitOrders.remove(limitOrder);
+            makeTrade(marketOrder, limitOrder, limitOrder.getLimit());
+        }
+    }
+
+    private void makeTrade(Order a, Order b, float limit) {
+        if(a.getDirection().equals(DIRECTION.BUY)) {
+            trades.add(new Trade(
+                a.getOrderId(),
+                b.getOrderId(),
+                a.getQuantity(),
+                limit));
+        } else if(a.getDirection().equals(DIRECTION.SELL)) {
+            trades.add(new Trade(
+                b.getOrderId(),
+                a.getOrderId(),
+                a.getQuantity(),
+                limit));
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
+    }
+
+    private void processLimitOrder(LimitOrder limitOrder) {
+        if (limitOrder.getDirection() == DIRECTION.BUY) {
+            processDirectedLimitOrder(limitOrder, sellMarketOrders, buyLimitOrders);
+        } else if (limitOrder.getDirection() == DIRECTION.SELL) {
+            processDirectedLimitOrder(limitOrder, buyMarketOrders, sellLimitOrders);
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
+    }
+
+    private void processDirectedLimitOrder(LimitOrder limitOrder,
+        SortedSet<MarketOrder> marketOrders, SortedSet<LimitOrder> limitOrders) {
+        if(marketOrders.isEmpty()) {
+            if(limitOrders.isEmpty()) {
+                limitOrders.add(limitOrder);
+            } else {
+                LimitOrder otherLimitOrder = limitOrders.first();
+
+                if(limitsMatch(limitOrder, otherLimitOrder)) {
+                    limitOrders.remove(otherLimitOrder);
+                    makeTrade(limitOrder, otherLimitOrder, otherLimitOrder.getLimit());
+                } else {
+                    limitOrders.add(limitOrder);
+                }
+            }
+        } else {
+            MarketOrder marketOrder = marketOrders.first();
+            marketOrders.remove(marketOrder);
+            makeTrade(marketOrder, limitOrder, limitOrder.getLimit());
+        }
+    }
+
+    private boolean limitsMatch(LimitOrder limitOrder, LimitOrder otherLimitOrder) {
+        if(limitOrder.getDirection().equals(DIRECTION.BUY)) {
+            return limitOrder.getLimit() <= otherLimitOrder.getLimit();
+        } else if(limitOrder.getDirection().equals(DIRECTION.SELL)) {
+            return limitOrder.getLimit() >= otherLimitOrder.getLimit();
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
     }
 
     public List<Trade> getAllResultingTrades() {
