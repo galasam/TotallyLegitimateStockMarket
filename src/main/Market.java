@@ -12,14 +12,14 @@ import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.Order.DIRECTION;
 import main.DataObjects.Trade;
-import main.DataStructures.TickerQueueGroup;
+import main.DataStructures.TickerData;
 
 class Market {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
     private final List<Trade> trades = new ArrayList<>();
-    private final Map<String, TickerQueueGroup> tickerQueues = new TreeMap<>();
+    private final Map<String, TickerData> tickerQueues = new TreeMap<>();
 
     Market() {
         LOGGER.finer("Creating Market");
@@ -39,7 +39,7 @@ class Market {
     }
 
     private void processMarketOrder(MarketOrder marketOrder) {
-        TickerQueueGroup queues = getTickerQueueGroup(marketOrder);
+        TickerData queues = getTickerQueueGroup(marketOrder);
         if (marketOrder.getDirection() == DIRECTION.BUY) {
             processDirectedMarketOrder(marketOrder, queues.getSellLimitOrders(), queues.getBuyMarketOrders());
         } else if (marketOrder.getDirection() == DIRECTION.SELL) {
@@ -49,10 +49,10 @@ class Market {
         }
     }
 
-    private TickerQueueGroup getTickerQueueGroup(Order marketOrder) {
-        TickerQueueGroup queues = tickerQueues.get(marketOrder.getTicker());
+    private TickerData getTickerQueueGroup(Order marketOrder) {
+        TickerData queues = tickerQueues.get(marketOrder.getTicker());
         if(queues == null) {
-            queues = new TickerQueueGroup();
+            queues = new TickerData();
             tickerQueues.put(marketOrder.getTicker(), queues);
         }
         return queues;
@@ -100,7 +100,7 @@ class Market {
     }
 
     private void processLimitOrder(LimitOrder limitOrder) {
-        TickerQueueGroup queues = getTickerQueueGroup(limitOrder);
+        TickerData queues = getTickerQueueGroup(limitOrder);
         if (limitOrder.getDirection() == DIRECTION.BUY) {
             processDirectedLimitOrder(limitOrder, queues.getSellMarketOrders(), queues.getBuyLimitOrders(), queues.getSellLimitOrders());
         } else if (limitOrder.getDirection() == DIRECTION.SELL) {

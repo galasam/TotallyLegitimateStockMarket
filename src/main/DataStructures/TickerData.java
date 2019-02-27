@@ -8,7 +8,7 @@ import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 
-public class TickerQueueGroup {
+public class TickerData {
     private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);
     private final SortedSet<LimitOrder> buyLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_DECS);
     private final SortedSet<MarketOrder> buyMarketOrders = new TreeSet<>(
@@ -34,7 +34,7 @@ public class TickerQueueGroup {
 
     @Override
     public String toString() {
-        return "TickerQueueGroup{" +
+        return "TickerData{" +
             "sellLimitOrders=" + sellLimitOrders +
             ", buyLimitOrders=" + buyLimitOrders +
             ", buyMarketOrders=" + buyMarketOrders +
