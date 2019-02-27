@@ -19,7 +19,7 @@ public class Main {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
-    private static final int phaseNumber = 1;
+    private static final int phaseNumber = 2;
     private static final String relativeDirectoryOfTestFiles = "test truths/Phase" + Integer.toString(phaseNumber);
     private static final String absoluteDirectoryOfTestFiles = Paths.get(System.getProperty("user.dir"), relativeDirectoryOfTestFiles).toString();
 
