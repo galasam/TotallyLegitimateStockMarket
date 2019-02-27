@@ -22,18 +22,18 @@ public class Main {
     private static final String relativeDirectoryOfTestFiles = "test truths/Phase1";
     private static final String absoluteDirectoryOfTestFiles = Paths.get(System.getProperty("user.dir"), relativeDirectoryOfTestFiles).toString();
 
-
     private static void setupLogger() {
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL);
         LOGGER.addHandler(consoleHandler);
-        LOGGER.setLevel(Level.ALL);
+        LOGGER.setLevel(Level.INFO);
     }
 
     public static void main(String[] args) {
         setupLogger();
-        LOGGER.log(Level.FINE, "Test starting");
+        LOGGER.info("Running All Tests in: " + relativeDirectoryOfTestFiles);
         IntStream.range(1,12).forEach(Main::runTest);
+        //runTest(8);
     }
 
     private static void runTest(int i) {
@@ -64,5 +64,4 @@ public class Main {
         final String filePath = Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
         File.writeTestFile(filePath, outputText);
     }
-
 }

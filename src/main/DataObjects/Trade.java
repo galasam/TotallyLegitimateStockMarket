@@ -30,5 +30,13 @@ public class Trade {
         return matchPrice;
     }
 
-
+    @Override
+    public String toString() {
+        return "Trade{" +
+            "buyOrder=" + buyOrder +
+            ", sellOrder=" + sellOrder +
+            ", matchQuantity=" + matchQuantity +
+            ", matchPrice=" + matchPrice +
+            '}';
+    }
 }

@@ -36,7 +36,11 @@ class Market {
         } else {
             throw new UnsupportedOperationException("Order type not specified");
         }
-
+        LOGGER.finer("Sell Limit Orders: " + sellLimitOrders.toString());
+        LOGGER.finer("Buy Limit Orders: " + buyLimitOrders.toString());
+        LOGGER.finer("Sell Market Orders: " + buyMarketOrders.toString());
+        LOGGER.finer("Sell Market Orders: " + sellMarketOrders.toString());
+        LOGGER.finer("Trades: " + trades.toString());
     }
 
     private void processMarketOrder(MarketOrder marketOrder) {
@@ -51,10 +55,13 @@ class Market {
 
     private void processDirectedMarketOrder(MarketOrder marketOrder,
         SortedSet<LimitOrder> limitOrders, SortedSet<MarketOrder> marketOrders) {
+        LOGGER.finest("Checking Limit Order queue");
         if(limitOrders.isEmpty()) {
+            LOGGER.finest("Limit Order queue empty, so adding to market order queue");
             marketOrders.add(marketOrder);
         } else {
             LimitOrder limitOrder = limitOrders.first();
+            LOGGER.finest("Limit Order queue not empty, so trading with best limit order: " + limitOrder.toString());
             limitOrders.remove(limitOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit());
         }
@@ -62,17 +69,21 @@ class Market {
 
     private void makeTrade(Order a, Order b, float limit) {
         if(a.getDirection().equals(DIRECTION.BUY)) {
-            trades.add(new Trade(
+            Trade trade = new Trade(
                 a.getOrderId(),
                 b.getOrderId(),
                 a.getQuantity(),
-                limit));
+                limit);
+            LOGGER.finest("Making Buy trade: " + trade.toString());
+            trades.add(trade);
         } else if(a.getDirection().equals(DIRECTION.SELL)) {
-            trades.add(new Trade(
+            Trade trade = new Trade(
                 b.getOrderId(),
                 a.getOrderId(),
                 a.getQuantity(),
-                limit));
+                limit);
+            LOGGER.finest("Making Sell trade: " + trade.toString());
+            trades.add(trade);
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
@@ -80,30 +91,39 @@ class Market {
 
     private void processLimitOrder(LimitOrder limitOrder) {
         if (limitOrder.getDirection() == DIRECTION.BUY) {
-            processDirectedLimitOrder(limitOrder, sellMarketOrders, buyLimitOrders);
+            processDirectedLimitOrder(limitOrder, sellMarketOrders, buyLimitOrders, sellLimitOrders);
         } else if (limitOrder.getDirection() == DIRECTION.SELL) {
-            processDirectedLimitOrder(limitOrder, buyMarketOrders, sellLimitOrders);
+            processDirectedLimitOrder(limitOrder, buyMarketOrders, sellLimitOrders, buyLimitOrders);
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
     }
 
     private void processDirectedLimitOrder(LimitOrder limitOrder,
-        SortedSet<MarketOrder> marketOrders, SortedSet<LimitOrder> limitOrders) {
+        SortedSet<MarketOrder> marketOrders,
+        SortedSet<LimitOrder> sameTypeLimitOrders,
+        SortedSet<LimitOrder> oppositeTypeLimitOrders) {
+        LOGGER.finest("Checking Market Order queue");
         if(marketOrders.isEmpty()) {
-            if(limitOrders.isEmpty()) {
-                limitOrders.add(limitOrder);
+            LOGGER.finest("Market Order queue empty, so checking Limit orders");
+            if(oppositeTypeLimitOrders.isEmpty()) {
+                LOGGER.finest("Limit Order queue empty, so adding to limit order queue");
+                sameTypeLimitOrders.add(limitOrder);
             } else {
-                LimitOrder otherLimitOrder = limitOrders.first();
+                LimitOrder otherLimitOrder = oppositeTypeLimitOrders.first();
+                LOGGER.finest("Limit Order queue not empty, so checking if best order matches: " + otherLimitOrder.toString());
 
                 if(limitsMatch(limitOrder, otherLimitOrder)) {
-                    limitOrders.remove(otherLimitOrder);
+                    LOGGER.finest("Limits match so completing trade");
+                    oppositeTypeLimitOrders.remove(otherLimitOrder);
                     makeTrade(limitOrder, otherLimitOrder, otherLimitOrder.getLimit());
                 } else {
-                    limitOrders.add(limitOrder);
+                    LOGGER.finest("Limits do not match so adding to limit order queue");
+                    sameTypeLimitOrders.add(limitOrder);
                 }
             }
         } else {
+            LOGGER.finest("Market Order queue not empty, so trading with oldest order: " + limitOrder.toString());
             MarketOrder marketOrder = marketOrders.first();
             marketOrders.remove(marketOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit());
@@ -112,9 +132,9 @@ class Market {
 
     private boolean limitsMatch(LimitOrder limitOrder, LimitOrder otherLimitOrder) {
         if(limitOrder.getDirection().equals(DIRECTION.BUY)) {
-            return limitOrder.getLimit() <= otherLimitOrder.getLimit();
-        } else if(limitOrder.getDirection().equals(DIRECTION.SELL)) {
             return limitOrder.getLimit() >= otherLimitOrder.getLimit();
+        } else if(limitOrder.getDirection().equals(DIRECTION.SELL)) {
+            return limitOrder.getLimit() <= otherLimitOrder.getLimit();
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }

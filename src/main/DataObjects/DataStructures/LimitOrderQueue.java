@@ -11,7 +11,7 @@ public class LimitOrderQueue extends TreeSet<LimitOrder> {
     private static final Comparator<LimitOrder> price_asc = (a, b) -> {
         float comp = a.getLimit() - b.getLimit();
         if(comp == 0) {
-            return 0;
+            return a.getOrderId() - b.getOrderId();
         } else if(comp < 0) {
             return -1;
         } else {
@@ -19,7 +19,16 @@ public class LimitOrderQueue extends TreeSet<LimitOrder> {
         }
     };
 
-    private static final Comparator<LimitOrder> price_desc = price_asc.reversed();
+    private static final Comparator<LimitOrder> price_desc = (a, b) -> {
+        float comp = b.getLimit() - a.getLimit();
+        if(comp == 0) {
+            return a.getOrderId() - b.getOrderId();
+        } else if(comp < 0) {
+            return -1;
+        } else {
+            return 1;
+        }
+    };
 
     public LimitOrderQueue(SORTING_METHOD method) {
         super(getComparator(method));
