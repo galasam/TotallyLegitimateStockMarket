@@ -31,8 +31,8 @@ class Market {
 
     void completeTimestep(Order order) {
         LOGGER.finer("Processing Triggered Stop Orders");
-        processTriggeredStopOrders();
         processOrder(order);
+        processTriggeredStopOrders();
     }
 
     private void processOrder(Order order) {
