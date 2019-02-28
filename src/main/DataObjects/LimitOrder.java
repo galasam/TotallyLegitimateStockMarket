@@ -13,6 +13,16 @@ public class LimitOrder extends ReadyOrder {
         this.limit = limit;
     }
 
+    public boolean limitMatches(LimitOrder other) {
+        if(getDirection().equals(DIRECTION.BUY)) {
+            return getLimit() >= other.getLimit();
+        } else if(getDirection().equals(DIRECTION.SELL)) {
+            return getLimit() <= other.getLimit();
+        } else {
+            throw new UnsupportedOperationException("Order direction not supported");
+        }
+    }
+
     @Override
     public String toString() {
         return "LimitOrder{" +

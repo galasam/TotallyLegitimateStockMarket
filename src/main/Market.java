@@ -185,7 +185,7 @@ class Market {
                 LimitOrder otherLimitOrder = oppositeTypeLimitOrders.first();
                 LOGGER.finest("Limit Order queue not empty, so checking if best order matches: " + otherLimitOrder.toString());
 
-                if(limitsMatch(limitOrder, otherLimitOrder)) {
+                if(limitOrder.limitMatches(otherLimitOrder)) {
                     LOGGER.finest("Limits match so completing trade");
                     oppositeTypeLimitOrders.remove(otherLimitOrder);
                     makeTrade(limitOrder, otherLimitOrder, otherLimitOrder.getLimit(), tickerData);
@@ -211,16 +211,6 @@ class Market {
             LOGGER.finest("Time in force is FOK so drop");
         } else {
             throw new UnsupportedOperationException("TIME IN FORCE mode not supported");
-        }
-    }
-
-    private boolean limitsMatch(LimitOrder limitOrder, LimitOrder otherLimitOrder) {
-        if(limitOrder.getDirection().equals(DIRECTION.BUY)) {
-            return limitOrder.getLimit() >= otherLimitOrder.getLimit();
-        } else if(limitOrder.getDirection().equals(DIRECTION.SELL)) {
-            return limitOrder.getLimit() <= otherLimitOrder.getLimit();
-        } else {
-            throw new UnsupportedOperationException("Order direction not supported");
         }
     }
 
