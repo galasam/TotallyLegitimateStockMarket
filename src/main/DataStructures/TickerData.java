@@ -1,6 +1,7 @@
 package main.DataStructures;
 
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import main.DataObjects.LimitOrder;
@@ -17,14 +18,14 @@ public class TickerData {
     private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>(
         Comparator.comparingInt(ReadyOrder ::getOrderId));
 
-    private float lastExecutedTradePrice = 0;
+    private Optional<Float> lastExecutedTradePrice = Optional.empty();
 
-    public float getLastExecutedTradePrice() {
+    public Optional<Float> getLastExecutedTradePrice() {
         return lastExecutedTradePrice;
     }
 
     public void setLastExecutedTradePrice(float lastExecutedTradePrice) {
-        this.lastExecutedTradePrice = lastExecutedTradePrice;
+        this.lastExecutedTradePrice = Optional.of(lastExecutedTradePrice);
     }
 
     public SortedSet<LimitOrder> getSellLimitOrders() {

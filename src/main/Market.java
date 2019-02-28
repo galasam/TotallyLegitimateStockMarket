@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -70,12 +71,22 @@ class Market {
 
     private boolean isStopLossTriggered(StopOrder stopOrder) {
         ReadyOrder readyOrder = stopOrder.getReadyOrder();
-        if(readyOrder.getDirection().equals(DIRECTION.BUY)) {
-            return stopOrder.getTriggerPrice() <= getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
-        } else if(readyOrder.getDirection().equals(DIRECTION.SELL)) {
-            return stopOrder.getTriggerPrice() >= getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
+        Optional<Float> lastExec = getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
+        LOGGER.finest("Checking if there has been a previous trade");
+        if(lastExec.isPresent()) {
+            LOGGER.finest("Previous trade found, checking direction");
+            if(readyOrder.getDirection().equals(DIRECTION.BUY)) {
+                LOGGER.finest("Buy direction: testing trigger");
+                return stopOrder.getTriggerPrice() <= lastExec.get();
+            } else if(readyOrder.getDirection().equals(DIRECTION.SELL)) {
+                LOGGER.finest("Sell direction: testing trigger");
+                return stopOrder.getTriggerPrice() >= lastExec.get();
+            } else {
+                throw new UnsupportedOperationException("Order direction not supported");
+            }
         } else {
-            throw new UnsupportedOperationException("Order direction not supported");
+            LOGGER.finest("No previous trade found");
+            return false;
         }
     }
 
