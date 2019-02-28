@@ -1,6 +1,6 @@
 package main.DataObjects;
 
-public class ReadyOrder extends Order {
+public abstract class ReadyOrder extends Order {
     public enum DIRECTION {SELL, BUY}
     public enum TIME_IN_FORCE {FOK, GTC}
 

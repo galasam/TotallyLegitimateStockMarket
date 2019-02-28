@@ -1,5 +1,8 @@
 package main.DataObjects;
 
+import java.util.Optional;
+import main.DataStructures.MarketState;
+
 public class StopMarketOrder extends StopOrder {
 
     public StopMarketOrder(MarketOrder readyOrder, float triggerPrice) {
@@ -16,5 +19,11 @@ public class StopMarketOrder extends StopOrder {
             "triggerPrice=" + triggerPrice +
             ", readyOrder=" + readyOrder +
             '}';
+    }
+
+    @Override
+    public Optional<Trade> process(MarketState marketState) {
+        marketState.getStopOrders().add(this);
+        return Optional.empty();
     }
 }

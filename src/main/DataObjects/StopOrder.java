@@ -1,6 +1,13 @@
 package main.DataObjects;
 
+import java.util.Optional;
+import java.util.logging.Logger;
+import main.DataObjects.ReadyOrder.DIRECTION;
+import main.DataStructures.MarketState;
+
 public abstract class StopOrder extends Order {
+
+    final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
     float triggerPrice;
     ReadyOrder readyOrder;
@@ -10,7 +17,7 @@ public abstract class StopOrder extends Order {
         this.readyOrder = readyOrder;
     }
 
-    public float getTriggerPrice() {
+    private float getTriggerPrice() {
         return triggerPrice;
     }
 
@@ -18,8 +25,24 @@ public abstract class StopOrder extends Order {
         return readyOrder;
     }
 
-    public Order toNonStopOrder() {
-        return readyOrder;
+    public boolean isTriggered(MarketState marketState) {
+        ReadyOrder readyOrder = getReadyOrder();
+        Optional<Float> lastExec = marketState.getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
+        LOGGER.finest("Checking if there has been a previous trade");
+        if(lastExec.isPresent()) {
+            LOGGER.finest("Previous trade found, checking direction");
+            if(readyOrder.getDirection().equals(DIRECTION.BUY)) {
+                LOGGER.finest("Buy direction: testing trigger");
+                return getTriggerPrice() <= lastExec.get();
+            } else if(readyOrder.getDirection().equals(DIRECTION.SELL)) {
+                LOGGER.finest("Sell direction: testing trigger");
+                return getTriggerPrice() >= lastExec.get();
+            } else {
+                throw new UnsupportedOperationException("Order direction not supported");
+            }
+        } else {
+            LOGGER.finest("No previous trade found");
+            return false;
+        }
     }
-
 }
