@@ -30,9 +30,10 @@ public class Main {
         LOGGER.setLevel(Level.FINER);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         setupLogger();
         LOGGER.info("Running All Tests in: " + relativeDirectoryOfTestFiles);
+
         int i = 1;
         while(true) {
             try {
@@ -40,8 +41,6 @@ public class Main {
             } catch (NoSuchFileException e) {
                 LOGGER.fine(String.format("No such test: %d", i));
                 break;
-            } catch (IOException e) {
-                LOGGER.warning("Could not run test due to IO Exception");
             }
             i++;
         }
