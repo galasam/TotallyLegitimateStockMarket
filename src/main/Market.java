@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +53,15 @@ class Market {
     }
 
     private void processTriggeredStopOrders() {
-        stopOrders.stream()
-            .filter(this::isStopLossTriggered)
-            .map(x -> x.toNonStopOrder())
-            .forEach(this::processOrder);
+        Iterator<StopOrder> it = stopOrders.iterator();
+        while(it.hasNext()) {
+            StopOrder stopOrder = it.next();
+            if(isStopLossTriggered(stopOrder)) {
+                it.remove();
+                ReadyOrder readyOrder = stopOrder.getReadyOrder();
+                processOrder(readyOrder);
+            }
+        }
     }
 
     private boolean isStopLossTriggered(StopOrder stopOrder) {
