@@ -56,10 +56,14 @@ class Market {
         Iterator<StopOrder> it = stopOrders.iterator();
         while(it.hasNext()) {
             StopOrder stopOrder = it.next();
+            LOGGER.finer("Testing Trigger on: " + stopOrder.toString());
             if(isStopLossTriggered(stopOrder)) {
+                LOGGER.finer("Stop Order Triggered");
                 it.remove();
                 ReadyOrder readyOrder = stopOrder.getReadyOrder();
                 processOrder(readyOrder);
+            } else {
+                LOGGER.finer("Stop Order not Triggered");
             }
         }
     }
