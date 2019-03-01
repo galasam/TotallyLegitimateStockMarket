@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 import main.DataObjects.ReadyOrder;
@@ -35,13 +36,13 @@ public class MarketUtils {
         }
     }
 
-    public static <E extends ReadyOrder> void queueIfTimeInForce(E order,
-        SortedSet<E> sameDirectionOrders) {
+    public static <E extends ReadyOrder> Optional<E> getIfGTC(E order) {
         if(order.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
             LOGGER.finest("Time in force is GTC so add to queue");
-            sameDirectionOrders.add(order);
+            return Optional.of(order);
         } else if (order.getTimeInForce().equals(TIME_IN_FORCE.FOK)) {
             LOGGER.finest("Time in force is FOK so drop");
+            return Optional.empty();
         } else {
             throw new UnsupportedOperationException("TIME IN FORCE mode not supported");
         }

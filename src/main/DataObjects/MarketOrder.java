@@ -1,7 +1,7 @@
 package main.DataObjects;
 
 import static main.MarketUtils.constructTrade;
-import static main.MarketUtils.queueIfTimeInForce;
+import static main.MarketUtils.getIfGTC;
 
 import java.util.Optional;
 import java.util.SortedSet;
@@ -38,7 +38,7 @@ public class MarketOrder extends ReadyOrder{
         LOGGER.finest("Checking Limit Order queue");
         if(limitOrders.isEmpty()) {
             LOGGER.finest("Limit Order queue empty, so check if time in force");
-            queueIfTimeInForce(this, marketOrders);
+            getIfGTC(this).ifPresent(marketOrders::add);
             return Optional.empty();
         } else {
             LimitOrder limitOrder = limitOrders.first();
