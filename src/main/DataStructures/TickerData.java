@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
-import main.DataObjects.Order;
 import main.DataObjects.ReadyOrder;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 import main.TradePriceSubscriber;
@@ -35,7 +35,9 @@ public class TickerData {
 
     public void setLastExecutedTradePrice(float lastExecutedTradePrice) {
         this.lastExecutedTradePrice = Optional.of(lastExecutedTradePrice);
-        tradePriceSubscribers.forEach(x -> x.notify(lastExecutedTradePrice));
+        tradePriceSubscribers = tradePriceSubscribers.stream()
+            .filter(x -> !x.notify(lastExecutedTradePrice))
+            .collect(Collectors.toList());
     }
 
     public SortedSet<LimitOrder> getSellLimitOrders() {

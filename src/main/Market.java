@@ -2,7 +2,9 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Logger;
 import main.DataObjects.Order;
 import main.DataObjects.ReadyOrder;
@@ -24,7 +26,9 @@ public class Market {
     void completeTimestep(Order order) {
         LOGGER.finer("Processing Triggered Stop Orders");
         processOrder(order);
-        processTriggeredStopOrders();
+        while(!marketState.getTriggeredOrderBacklog().isEmpty()) {
+            processOrder(marketState.getTriggeredOrderBacklog().poll());
+        }
     }
 
     private void processOrder(Order order) {
@@ -35,22 +39,6 @@ public class Market {
         LOGGER.finer("Ticker queues: " + marketState.getTickerQueues().toString());
         LOGGER.finer("Stop Orders: " + marketState.getStopOrders().toString());
         LOGGER.finer("Trades: " + trades.toString());
-    }
-
-    private void processTriggeredStopOrders() {
-        Iterator<StopOrder> it = marketState.getStopOrders().iterator();
-        while(it.hasNext()) {
-            StopOrder stopOrder = it.next();
-            LOGGER.finer("Testing Trigger on: " + stopOrder.toString());
-            if(stopOrder.isTriggered()) {
-                LOGGER.finer("Stop Order Triggered");
-                it.remove();
-                ReadyOrder readyOrder = stopOrder.getReadyOrder();
-                processOrder(readyOrder);
-            } else {
-                LOGGER.finer("Stop Order not Triggered");
-            }
-        }
     }
 
     List<Trade> getAllResultingTrades() {

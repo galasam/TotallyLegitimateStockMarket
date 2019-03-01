@@ -3,6 +3,7 @@ package main.DataStructures;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.TreeMap;
 import main.DataObjects.ReadyOrder;
 import main.DataObjects.StopOrder;
@@ -11,6 +12,7 @@ public class MarketState {
 
     private final Map<String, TickerData> tickerQueues = new TreeMap<>();
     private final List<StopOrder> stopOrders = new LinkedList<>();
+    private final Queue<ReadyOrder> triggeredOrderBacklog = new LinkedList<>();
 
 
     public Map<String, TickerData> getTickerQueues() {
@@ -19,6 +21,10 @@ public class MarketState {
 
     public List<StopOrder> getStopOrders() {
         return stopOrders;
+    }
+
+    public Queue<ReadyOrder> getTriggeredOrderBacklog() {
+        return triggeredOrderBacklog;
     }
 
     public TickerData getTickerQueueGroup(ReadyOrder marketOrder) {

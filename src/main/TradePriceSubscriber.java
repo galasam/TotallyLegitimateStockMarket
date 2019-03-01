@@ -1,5 +1,5 @@
 package main;
 
 public interface TradePriceSubscriber {
-    public void notify(float tradePrice);
+    boolean notify(float tradePrice);
 }

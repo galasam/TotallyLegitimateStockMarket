@@ -1,6 +1,7 @@
 package main.DataObjects;
 
 import java.util.Optional;
+import java.util.Queue;
 import java.util.logging.Logger;
 import main.DataObjects.ReadyOrder.DIRECTION;
 import main.DataStructures.MarketState;
@@ -12,64 +13,74 @@ public abstract class StopOrder extends Order implements TradePriceSubscriber{
 
     float triggerPrice;
     ReadyOrder readyOrder;
-    boolean triggerSatisfied;
+
+    private Queue<ReadyOrder> triggeredOrderBacklog;
 
     StopOrder(ReadyOrder readyOrder, float triggerPrice) {
         this.triggerPrice = triggerPrice;
         this.readyOrder = readyOrder;
-        this.triggerSatisfied = false;
     }
 
     private float getTriggerPrice() {
         return triggerPrice;
     }
 
-    public ReadyOrder getReadyOrder() {
+    private ReadyOrder getReadyOrder() {
         return readyOrder;
     }
 
-    public void updateIsTriggerSatisfied(MarketState marketState) {
-        ReadyOrder readyOrder = getReadyOrder();
-        Optional<Float> lastExec = marketState.getTickerQueueGroup(readyOrder).getLastExecutedTradePrice();
-        LOGGER.finest("Checking if there has been a previous trade");
-        if(lastExec.isPresent()) {
-            LOGGER.finest("Previous trade found");
-            updateIsTriggerSatisfied(lastExec.get());
+    @Override
+    public boolean notify(float tradePrice) {
+        LOGGER.finer("Stop order notified of last exec trade price: " + tradePrice);
+        LOGGER.finer("Checking if trigger is satisfied");
+        if(isTriggerSatisfied(tradePrice)) {
+            LOGGER.finer("Trigger is satisfied. Adding to queue");
+            triggeredOrderBacklog.add(getReadyOrder());
+            return true;
         } else {
-            LOGGER.finest("No previous trade found");
+            LOGGER.finer("Trigger is not satisfied");
+            return false;
         }
     }
 
-    public boolean isTriggered() {
-        return triggerSatisfied;
-    }
-
-    @Override
-    public void notify(float tradePrice) {
-        LOGGER.finer("Stop order notified of last exec trade price: " + tradePrice);
-        updateIsTriggerSatisfied(tradePrice);
-    }
-
-    private void updateIsTriggerSatisfied(float tradePrice) {
+    private boolean isTriggerSatisfied(float tradePrice) {
         ReadyOrder readyOrder = getReadyOrder();
         LOGGER.finest("Checking direction");
         if(readyOrder.getDirection().equals(DIRECTION.BUY)) {
             LOGGER.finest("Buy direction: testing trigger");
-            triggerSatisfied =  getTriggerPrice() <= tradePrice;
+            return getTriggerPrice() <= tradePrice;
         } else if(readyOrder.getDirection().equals(DIRECTION.SELL)) {
             LOGGER.finest("Sell direction: testing trigger");
-            triggerSatisfied =  getTriggerPrice() >= tradePrice;
+            return getTriggerPrice() >= tradePrice;
         } else {
             throw new UnsupportedOperationException("Order direction not supported");
         }
-        LOGGER.finest("TriggerSatisfied: " + Boolean.toString(triggerSatisfied));
+    }
+
+    private boolean isTriggerSatisfied(MarketState marketState) {
+        ReadyOrder readyOrder = getReadyOrder();
+        Optional<Float> lastExec = marketState.getTickerQueueGroup(readyOrder)
+            .getLastExecutedTradePrice();
+        LOGGER.finest("Checking if there has been a previous trade");
+        if(lastExec.isPresent()) {
+            LOGGER.finest("Previous trade found");
+            return isTriggerSatisfied(lastExec.get());
+        } else {
+            LOGGER.finest("No previous trade found");
+            return false;
+        }
     }
 
     @Override
     public Optional<Trade> process(MarketState marketState) {
-        updateIsTriggerSatisfied(marketState);
-        marketState.getTickerQueueGroup(getReadyOrder()).subscribeToTradePriceChanges(this);
-        marketState.getStopOrders().add(this);
+        if(isTriggerSatisfied(marketState)) {
+            marketState.getTriggeredOrderBacklog().add(getReadyOrder());
+        } else {
+            marketState.getTickerQueueGroup(getReadyOrder())
+                .subscribeToTradePriceChanges(this);
+            marketState.getStopOrders().add(this);
+            triggeredOrderBacklog = marketState.getTriggeredOrderBacklog();
+        }
         return Optional.empty();
     }
 }

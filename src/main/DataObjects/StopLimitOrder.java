@@ -6,8 +6,4 @@ public class StopLimitOrder extends StopOrder {
         super(limitOrder, triggerPrice);
     }
 
-    public LimitOrder toNonStopOrder() {
-        return (LimitOrder) readyOrder;
-    }
-
 }
