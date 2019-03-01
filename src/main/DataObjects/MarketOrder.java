@@ -4,6 +4,7 @@ import static main.MarketUtils.constructTrade;
 import static main.MarketUtils.getIfGTC;
 
 import java.util.Optional;
+import java.util.Queue;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 import main.DataStructures.MarketState;
@@ -34,7 +35,7 @@ public class MarketOrder extends ReadyOrder{
 
 
     private Optional<Trade> processDirectedMarketOrder(MarketOrder marketOrder, TickerData tickerData,
-        SortedSet<LimitOrder> limitOrders, SortedSet<MarketOrder> marketOrders) {
+        SortedSet<LimitOrder> limitOrders, Queue<MarketOrder> marketOrders) {
         LOGGER.finest("Checking Limit Order queue");
         if(limitOrders.isEmpty()) {
             LOGGER.finest("Limit Order queue empty, so check if time in force");

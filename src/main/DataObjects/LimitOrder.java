@@ -4,6 +4,7 @@ import static main.MarketUtils.constructTrade;
 import static main.MarketUtils.getIfGTC;
 
 import java.util.Optional;
+import java.util.Queue;
 import java.util.SortedSet;
 import java.util.logging.Logger;
 import main.DataStructures.MarketState;
@@ -53,7 +54,7 @@ public class LimitOrder extends ReadyOrder {
     }
 
     private Optional<Trade> processDirectedLimitOrder(TickerData tickerData,
-        SortedSet<MarketOrder> marketOrders,
+        Queue<MarketOrder> marketOrders,
         SortedSet<LimitOrder> sameTypeLimitOrders,
         SortedSet<LimitOrder> oppositeTypeLimitOrders) {
         LOGGER.finest("Checking Market Order queue");
@@ -79,8 +80,7 @@ public class LimitOrder extends ReadyOrder {
             }
         } else {
             LOGGER.finest("Market Order queue not empty, so trading with oldest order: " + toString());
-            MarketOrder marketOrder = marketOrders.first();
-            marketOrders.remove(marketOrder);
+            MarketOrder marketOrder = marketOrders.poll();
             return Optional.of(constructTrade(marketOrder, this, getLimit(), tickerData));
 
         }

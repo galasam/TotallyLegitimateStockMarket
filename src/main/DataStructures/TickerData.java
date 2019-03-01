@@ -1,25 +1,21 @@
 package main.DataStructures;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import main.DataObjects.LimitOrder;
 import main.DataObjects.MarketOrder;
-import main.DataObjects.ReadyOrder;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
 import main.TradePriceSubscriber;
 
 public class TickerData {
     private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);
     private final SortedSet<LimitOrder> buyLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_DECS);
-    private final SortedSet<MarketOrder> buyMarketOrders = new TreeSet<>(
-        Comparator.comparingInt(ReadyOrder::getOrderId));
-    private final SortedSet<MarketOrder> sellMarketOrders = new TreeSet<>(
-        Comparator.comparingInt(ReadyOrder ::getOrderId));
+    private final Queue<MarketOrder> buyMarketOrders = new LinkedList<>();
+    private final Queue<MarketOrder> sellMarketOrders = new LinkedList<>();
 
     private Optional<Float> lastExecutedTradePrice = Optional.empty();
 
@@ -48,11 +44,11 @@ public class TickerData {
         return buyLimitOrders;
     }
 
-    public SortedSet<MarketOrder> getBuyMarketOrders() {
+    public Queue<MarketOrder> getBuyMarketOrders() {
         return buyMarketOrders;
     }
 
-    public SortedSet<MarketOrder> getSellMarketOrders() {
+    public Queue<MarketOrder> getSellMarketOrders() {
         return sellMarketOrders;
     }
 
