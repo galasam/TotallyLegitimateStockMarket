@@ -21,9 +21,4 @@ public class StopMarketOrder extends StopOrder {
             '}';
     }
 
-    @Override
-    public Optional<Trade> process(MarketState marketState) {
-        marketState.getStopOrders().add(this);
-        return Optional.empty();
-    }
 }

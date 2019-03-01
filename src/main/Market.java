@@ -42,7 +42,7 @@ public class Market {
         while(it.hasNext()) {
             StopOrder stopOrder = it.next();
             LOGGER.finer("Testing Trigger on: " + stopOrder.toString());
-            if(stopOrder.isTriggered(marketState)) {
+            if(stopOrder.isTriggered()) {
                 LOGGER.finer("Stop Order Triggered");
                 it.remove();
                 ReadyOrder readyOrder = stopOrder.getReadyOrder();

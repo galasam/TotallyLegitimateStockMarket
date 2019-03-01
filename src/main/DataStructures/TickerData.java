@@ -1,6 +1,8 @@
 package main.DataStructures;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -9,6 +11,7 @@ import main.DataObjects.MarketOrder;
 import main.DataObjects.Order;
 import main.DataObjects.ReadyOrder;
 import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
+import main.TradePriceSubscriber;
 
 public class TickerData {
     private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);
@@ -20,12 +23,19 @@ public class TickerData {
 
     private Optional<Float> lastExecutedTradePrice = Optional.empty();
 
+    private List<TradePriceSubscriber> tradePriceSubscribers = new LinkedList<>();
+
+    public void subscribeToTradePriceChanges(TradePriceSubscriber subscriber) {
+        tradePriceSubscribers.add(subscriber);
+    }
+
     public Optional<Float> getLastExecutedTradePrice() {
         return lastExecutedTradePrice;
     }
 
     public void setLastExecutedTradePrice(float lastExecutedTradePrice) {
         this.lastExecutedTradePrice = Optional.of(lastExecutedTradePrice);
+        tradePriceSubscribers.forEach(x -> x.notify(lastExecutedTradePrice));
     }
 
     public SortedSet<LimitOrder> getSellLimitOrders() {
