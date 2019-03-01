@@ -10,6 +10,10 @@ import java.util.List;
 
 public class File {
 
+    public static boolean fileExists(String filename) {
+        return Files.exists(new java.io.File(filename).toPath());
+    }
+
     public static List<String> readTestFile(String filename) throws IOException {
         return Files.readAllLines(Paths.get(filename));
     }

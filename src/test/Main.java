@@ -35,17 +35,17 @@ public class Main {
         LOGGER.info("Running All Tests in: " + relativeDirectoryOfTestFiles);
 
         int i = 1;
-        while(true) {
-            try {
-                runTest(i);
-            } catch (NoSuchFileException e) {
-                LOGGER.fine(String.format("No such test: %d", i));
-                break;
-            }
-            i++;
+        while(testFileExists(i)) {
+            runTest(i++);
         }
+        
         //IntStream.range(1,12).forEach(Main::runTest);
         //runTest(8);
+    }
+
+    private static boolean testFileExists(int testNumber) {
+        String filepath = getInputFilePath(testNumber);
+        return File.fileExists(filepath);
     }
 
     private static void runTest(int i) throws IOException {
@@ -57,10 +57,14 @@ public class Main {
 
     private static List<Order> readOrders(int testNumber) throws IOException {
         LOGGER.fine("Reading Orders from file");
-        final String filename = String.format("input.test%d.%d.csv", phaseNumber, testNumber);
-        final String filepath = Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
+        String filepath = getInputFilePath(testNumber);
         final List<String> inputText = File.readTestFile(filepath);
         return CSV.decodeCSV(inputText);
+    }
+
+    static String getInputFilePath(int testNumber) {
+        final String filename = String.format("input.test%d.%d.csv", phaseNumber, testNumber);
+        return Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
     }
 
     private static void writeTrades(int testNumber, List<Trade> trades)
