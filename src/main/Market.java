@@ -1,18 +1,13 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.logging.Logger;
 import main.DataObjects.Order;
-import main.DataObjects.ReadyOrder;
-import main.DataObjects.StopOrder;
 import main.DataObjects.Trade;
 import main.DataStructures.MarketState;
 
-public class Market {
+class Market {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 

@@ -17,14 +17,14 @@ public class LimitOrder extends ReadyOrder {
         return limit;
     }
 
-    float limit;
+    private float limit;
 
     public LimitOrder(int orderId, DIRECTION direction, int quantity, TIME_IN_FORCE timeInForce, String ticker, float limit) {
         super(orderId, direction, quantity, timeInForce, ticker);
         this.limit = limit;
     }
 
-    public boolean limitMatches(LimitOrder other) {
+    private boolean limitMatches(LimitOrder other) {
         if(getDirection().equals(DIRECTION.BUY)) {
             return getLimit() >= other.getLimit();
         } else if(getDirection().equals(DIRECTION.SELL)) {

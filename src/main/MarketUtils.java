@@ -1,7 +1,6 @@
 package main;
 
 import java.util.Optional;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 import main.DataObjects.ReadyOrder;
 import main.DataObjects.ReadyOrder.DIRECTION;
