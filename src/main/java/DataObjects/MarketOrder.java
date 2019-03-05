@@ -1,4 +1,4 @@
-package main.DataObjects;
+package DataObjects;
 
 public class MarketOrder extends ReadyOrder{
 

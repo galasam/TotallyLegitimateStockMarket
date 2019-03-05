@@ -1,14 +1,14 @@
-package main.DataStructures;
+package DataStructures;
 
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import main.DataObjects.LimitOrder;
-import main.DataObjects.MarketOrder;
-import main.DataObjects.Order;
-import main.DataObjects.ReadyOrder;
-import main.DataStructures.LimitOrderQueue.SORTING_METHOD;
+import DataObjects.LimitOrder;
+import DataObjects.MarketOrder;
+import DataObjects.Order;
+import DataObjects.ReadyOrder;
+import DataStructures.LimitOrderQueue.SORTING_METHOD;
 
 public class TickerData {
     private final SortedSet<LimitOrder> sellLimitOrders = new LimitOrderQueue(SORTING_METHOD.PRICE_ASC);

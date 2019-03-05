@@ -1,4 +1,4 @@
-package main.DataObjects;
+package DataObjects;
 
 public class StopLimitOrder extends StopOrder {
 

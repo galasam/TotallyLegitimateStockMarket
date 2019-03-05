@@ -1,4 +1,4 @@
-package main.DataObjects;
+package DataObjects;
 
 public class ReadyOrder extends Order {
     public enum DIRECTION {SELL, BUY}

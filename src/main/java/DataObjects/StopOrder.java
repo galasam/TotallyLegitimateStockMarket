@@ -1,4 +1,4 @@
-package main.DataObjects;
+package DataObjects;
 
 public abstract class StopOrder extends Order {
 

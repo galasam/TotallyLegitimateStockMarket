@@ -1,8 +1,8 @@
-package main.DataStructures;
+package DataStructures;
 
 import java.util.Comparator;
 import java.util.TreeSet;
-import main.DataObjects.LimitOrder;
+import DataObjects.LimitOrder;
 
 class LimitOrderQueue extends TreeSet<LimitOrder> {
 

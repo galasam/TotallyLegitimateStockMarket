@@ -1,19 +1,16 @@
-package test;
 
+import DataObjects.Order;
+import DataObjects.Trade;
+import Utils.CSV;
+import Utils.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.DataObjects.Order;
-import main.DataObjects.Trade;
-import main.MarketManager;
-import test.Utils.CSV;
-import test.Utils.File;
 
 public class Main {
 
@@ -21,7 +18,8 @@ public class Main {
 
     private static final int phaseNumber = 4;
     private static final String relativeDirectoryOfTestFiles = "test truths/Phase" + Integer.toString(phaseNumber);
-    private static final String absoluteDirectoryOfTestFiles = Paths.get(System.getProperty("user.dir"), relativeDirectoryOfTestFiles).toString();
+    private static final String absoluteDirectoryOfTestFiles = Paths
+        .get(System.getProperty("user.dir"), relativeDirectoryOfTestFiles).toString();
 
     private static void setupLogger() {
         ConsoleHandler consoleHandler = new ConsoleHandler();
@@ -38,14 +36,14 @@ public class Main {
         while(testFileExists(i)) {
             runTest(i++);
         }
-        
+
         //IntStream.range(1,12).forEach(Main::runTest);
         //runTest(8);
     }
 
     private static boolean testFileExists(int testNumber) {
         String filepath = getInputFilePath(testNumber);
-        return File.fileExists(filepath);
+        return Utils.File.fileExists(filepath);
     }
 
     private static void runTest(int i) throws IOException {
@@ -62,7 +60,7 @@ public class Main {
         return CSV.decodeCSV(inputText);
     }
 
-    static String getInputFilePath(int testNumber) {
+    private static String getInputFilePath(int testNumber) {
         final String filename = String.format("input.test%d.%d.csv", phaseNumber, testNumber);
         return Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
     }

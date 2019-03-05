@@ -1,5 +1,3 @@
-package main;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,15 +7,15 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import main.DataObjects.ReadyOrder;
-import main.DataObjects.ReadyOrder.TIME_IN_FORCE;
-import main.DataObjects.LimitOrder;
-import main.DataObjects.MarketOrder;
-import main.DataObjects.Order;
-import main.DataObjects.ReadyOrder.DIRECTION;
-import main.DataObjects.StopOrder;
-import main.DataObjects.Trade;
-import main.DataStructures.TickerData;
+import DataObjects.ReadyOrder;
+import DataObjects.ReadyOrder.TIME_IN_FORCE;
+import DataObjects.LimitOrder;
+import DataObjects.MarketOrder;
+import DataObjects.Order;
+import DataObjects.ReadyOrder.DIRECTION;
+import DataObjects.StopOrder;
+import DataObjects.Trade;
+import DataStructures.TickerData;
 
 class Market {
 

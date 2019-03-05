@@ -1,8 +1,7 @@
-package main;
 
 import java.util.List;
-import main.DataObjects.Order;
-import main.DataObjects.Trade;
+import DataObjects.Order;
+import DataObjects.Trade;
 
 public class MarketManager {
 

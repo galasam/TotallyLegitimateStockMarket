@@ -1,18 +1,18 @@
-package test.Utils;
+package Utils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import main.DataObjects.LimitOrder;
-import main.DataObjects.MarketOrder;
-import main.DataObjects.Order;
-import main.DataObjects.ReadyOrder.DIRECTION;
-import main.DataObjects.ReadyOrder.TIME_IN_FORCE;
-import main.DataObjects.StopLimitOrder;
-import main.DataObjects.StopMarketOrder;
-import main.DataObjects.Trade;
+import DataObjects.LimitOrder;
+import DataObjects.MarketOrder;
+import DataObjects.Order;
+import DataObjects.ReadyOrder.DIRECTION;
+import DataObjects.ReadyOrder.TIME_IN_FORCE;
+import DataObjects.StopLimitOrder;
+import DataObjects.StopMarketOrder;
+import DataObjects.Trade;
 
 public class CSV {
 
