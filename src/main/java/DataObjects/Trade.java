@@ -1,42 +1,15 @@
 package DataObjects;
 
+import lombok.Builder;
+import lombok.Value;
+
+@Value
+@Builder
 public class Trade {
 
-    public Trade(int buyOrder, int sellOrder, int matchQuantity, float matchPrice) {
-        this.buyOrder = buyOrder;
-        this.sellOrder = sellOrder;
-        this.matchQuantity = matchQuantity;
-        this.matchPrice = matchPrice;
-    }
+    int buyOrder;
+    int sellOrder;
+    int matchQuantity;
+    float matchPrice;
 
-    private final int buyOrder;
-    private final int sellOrder;
-    private final int matchQuantity;
-    private final float matchPrice;
-
-    public int getBuyOrder() {
-        return buyOrder;
-    }
-
-    public int getSellOrder() {
-        return sellOrder;
-    }
-
-    public int getMatchQuantity() {
-        return matchQuantity;
-    }
-
-    public float getMatchPrice() {
-        return matchPrice;
-    }
-
-    @Override
-    public String toString() {
-        return "Trade{" +
-            "buyOrder=" + buyOrder +
-            ", sellOrder=" + sellOrder +
-            ", matchQuantity=" + matchQuantity +
-            ", matchPrice=" + matchPrice +
-            '}';
-    }
 }

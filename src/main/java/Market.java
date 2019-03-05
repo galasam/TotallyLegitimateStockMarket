@@ -132,19 +132,21 @@ class Market {
     private void makeTrade(ReadyOrder a, ReadyOrder b, float limit, TickerData ticketData) {
         ticketData.setLastExecutedTradePrice(limit);
         if(a.getDirection().equals(DIRECTION.BUY)) {
-            Trade trade = new Trade(
-                a.getOrderId(),
-                b.getOrderId(),
-                a.getQuantity(),
-                limit);
+            Trade trade = Trade.builder()
+                .buyOrder(a.getOrderId())
+                .sellOrder(b.getOrderId())
+                .matchQuantity(a.getQuantity())
+                .matchPrice(limit)
+                .build();
             LOGGER.finest("Making Buy trade: " + trade.toString());
             trades.add(trade);
         } else if(a.getDirection().equals(DIRECTION.SELL)) {
-            Trade trade = new Trade(
-                b.getOrderId(),
-                a.getOrderId(),
-                a.getQuantity(),
-                limit);
+            Trade trade = Trade.builder()
+                .buyOrder(b.getOrderId())
+                .sellOrder(a.getOrderId())
+                .matchQuantity(a.getQuantity())
+                .matchPrice(limit)
+                .build();
             LOGGER.finest("Making Sell trade: " + trade.toString());
             trades.add(trade);
         } else {
