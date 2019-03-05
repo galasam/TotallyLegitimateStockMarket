@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import lombok.Cleanup;
 
 public class File {
 
@@ -20,9 +21,8 @@ public class File {
 
     public static void writeTestFile(String filename, List<String> contents)
         throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter(filename, "UTF-8");
+        @Cleanup PrintWriter writer = new PrintWriter(filename, "UTF-8");
         contents.forEach(writer::println);
-        writer.close();
     }
 
 }

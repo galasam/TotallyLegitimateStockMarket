@@ -1,25 +1,23 @@
 package DataObjects;
 
-public abstract class StopOrder extends Order {
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+
+@Value
+@EqualsAndHashCode(callSuper=false)
+@Builder
+public class StopOrder extends Order {
 
     float triggerPrice;
-    ReadyOrder readyOrder;
-
-    StopOrder(ReadyOrder readyOrder, float triggerPrice) {
-        this.triggerPrice = triggerPrice;
-        this.readyOrder = readyOrder;
-    }
+    protected ReadyOrder readyOrder;
 
     public float getTriggerPrice() {
         return triggerPrice;
     }
 
     public ReadyOrder getReadyOrder() {
-        return readyOrder;
-    }
-
-    public Order toNonStopOrder() {
-        return readyOrder;
+        return  readyOrder;
     }
 
 }

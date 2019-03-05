@@ -1,14 +1,18 @@
 package DataObjects;
 
-public class LimitOrder extends ReadyOrder {
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
-    public float getLimit() {
-        return limit;
-    }
+@Value
+@EqualsAndHashCode(callSuper=false)
+public class LimitOrder extends ReadyOrder {
 
     float limit;
 
-    public LimitOrder(int orderId, DIRECTION direction, int quantity, TIME_IN_FORCE timeInForce, String ticker, float limit) {
+    @Builder
+    public LimitOrder(int orderId, DIRECTION direction, int quantity,
+        TIME_IN_FORCE timeInForce, String ticker, float limit) {
         super(orderId, direction, quantity, timeInForce, ticker);
         this.limit = limit;
     }
@@ -23,14 +27,4 @@ public class LimitOrder extends ReadyOrder {
         }
     }
 
-    @Override
-    public String toString() {
-        return "LimitOrder{" +
-            "limit=" + limit +
-            ", orderId=" + orderId +
-            ", direction=" + direction +
-            ", quantity=" + quantity +
-            ", timeInForce=" + timeInForce +
-            '}';
-    }
 }

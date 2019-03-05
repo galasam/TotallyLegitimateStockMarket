@@ -1,5 +1,6 @@
 package Utils;
 
+import DataObjects.StopOrder;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,8 +11,6 @@ import DataObjects.MarketOrder;
 import DataObjects.Order;
 import DataObjects.ReadyOrder.DIRECTION;
 import DataObjects.ReadyOrder.TIME_IN_FORCE;
-import DataObjects.StopLimitOrder;
-import DataObjects.StopMarketOrder;
 import DataObjects.Trade;
 
 public class CSV {
@@ -41,7 +40,7 @@ public class CSV {
         final String[] values = input.split(",");
 
         final int orderId = Integer.parseInt(values[INPUT_HEADINGS.get("ORDER ID")]);
-        final String direction = values[INPUT_HEADINGS.get("DIRECTION")];
+        final DIRECTION direction = DIRECTION.valueOf(values[INPUT_HEADINGS.get("DIRECTION")]);
         final int quantity = Integer.parseInt(values[INPUT_HEADINGS.get("QUANTITY")]);
         final String type = values[INPUT_HEADINGS.get("TYPE")];
         final TIME_IN_FORCE tif = TIME_IN_FORCE.valueOf(values[INPUT_HEADINGS.get("TIME IN FORCE")]);
@@ -50,22 +49,48 @@ public class CSV {
         switch (type) {
             case "LIMIT":
                 float limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
-                return new LimitOrder(
-                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit);
+                return LimitOrder.builder()
+                    .orderId(orderId)
+                    .direction(direction)
+                    .quantity(quantity)
+                    .timeInForce(tif)
+                    .ticker(ticker)
+                    .limit(limit)
+                    .build();
             case "MARKET":
-                return new MarketOrder(
-                    orderId, DIRECTION.valueOf(direction), quantity, tif, ticker);
+                return MarketOrder.builder()
+                    .orderId(orderId)
+                    .direction(direction)
+                    .quantity(quantity)
+                    .timeInForce(tif)
+                    .ticker(ticker)
+                    .build();
             case "STOP-LIMIT":
                 limit = Float.parseFloat(values[INPUT_HEADINGS.get("LIMIT PRICE")]);
                 float triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
-                return new StopLimitOrder(
-                    new LimitOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker, limit),
-                    triggerPrice);
+                return StopOrder.builder()
+                    .readyOrder(LimitOrder.builder()
+                        .orderId(orderId)
+                        .direction(direction)
+                        .quantity(quantity)
+                        .timeInForce(tif)
+                        .ticker(ticker)
+                        .limit(limit)
+                        .build())
+                    .triggerPrice(triggerPrice)
+                    .build();
             case "STOP-MARKET":
                 triggerPrice = Float.parseFloat(values[INPUT_HEADINGS.get("TRIGGER PRICE")]);
-                return new StopMarketOrder(
-                    new MarketOrder(orderId, DIRECTION.valueOf(direction), quantity, tif, ticker),
-                    triggerPrice);
+                return StopOrder.builder()
+                    .readyOrder(MarketOrder.builder()
+                        .orderId(orderId)
+                        .direction(direction)
+                        .quantity(quantity)
+                        .timeInForce(tif)
+                        .ticker(ticker)
+                        .build())
+                    .triggerPrice(triggerPrice)
+                    .build();
 
             default:
                 throw new UnsupportedOperationException(" Unsupported order type");
