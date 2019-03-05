@@ -1,5 +1,6 @@
 *.iml
 .idea/
 out/
+target/
 test\ truths/*/output.test*.*.csv
 
