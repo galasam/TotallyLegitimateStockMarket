@@ -1,3 +1,5 @@
+package Main;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,7 +28,7 @@ class Market {
     private final List<StopOrder> stopOrders = new LinkedList<>();
 
     Market() {
-        LOGGER.finer("Creating Market");
+        LOGGER.finer("Creating Main.Market");
     }
 
     void completeTimestep(Order order) {
@@ -175,9 +177,9 @@ class Market {
         SortedSet<MarketOrder> marketOrders,
         SortedSet<LimitOrder> sameTypeLimitOrders,
         SortedSet<LimitOrder> oppositeTypeLimitOrders) {
-        LOGGER.finest("Checking Market Order queue");
+        LOGGER.finest("Checking Main.Market Order queue");
         if(marketOrders.isEmpty()) {
-            LOGGER.finest("Market Order queue empty, so checking Limit orders");
+            LOGGER.finest("Main.Market Order queue empty, so checking Limit orders");
             if(oppositeTypeLimitOrders.isEmpty()) {
                 LOGGER.finest("Limit Order queue empty, so check if time in force");
                 queueIfTimeInForce(limitOrder, sameTypeLimitOrders);
@@ -195,7 +197,7 @@ class Market {
                 }
             }
         } else {
-            LOGGER.finest("Market Order queue not empty, so trading with oldest order: " + limitOrder.toString());
+            LOGGER.finest("Main.Market Order queue not empty, so trading with oldest order: " + limitOrder.toString());
             MarketOrder marketOrder = marketOrders.first();
             marketOrders.remove(marketOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit(), tickerData);

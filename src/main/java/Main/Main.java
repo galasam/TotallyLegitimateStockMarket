@@ -1,3 +1,4 @@
+package Main;
 
 import DataObjects.Order;
 import DataObjects.Trade;
@@ -37,7 +38,7 @@ public class Main {
             runTest(i++);
         }
 
-        //IntStream.range(1,12).forEach(Main::runTest);
+        //IntStream.range(1,12).forEach(Main.Main::runTest);
         //runTest(8);
     }
 
