@@ -12,8 +12,13 @@ import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class Main {
+@SpringBootApplication
+public class Main implements ApplicationRunner{
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
@@ -30,6 +35,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        SpringApplication.run(Main.class, args);
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
         setupLogger();
         LOGGER.info("Running All Tests in: " + relativeDirectoryOfTestFiles);
 
@@ -74,4 +84,6 @@ public class Main {
         final String filePath = Paths.get(absoluteDirectoryOfTestFiles, filename).toString();
         File.writeTestFile(filePath, outputText);
     }
+
+
 }
