@@ -12,81 +12,109 @@ public class MarketTests {
 
     int newOrderID = 1;
 
-    LimitOrder limitOrderA = LimitOrder.builder()
-        .orderId(newOrderID++)
-        .direction(DIRECTION.BUY)
-        .quantity(999)
-        .ticker("Fred")
-        .limit(3.14f)
-        .timeInForce(TIME_IN_FORCE.GTC)
-        .build();
-
-    MarketOrder marketOrderA = MarketOrder.builder()
-        .orderId(newOrderID++)
-        .direction(DIRECTION.SELL)
-        .quantity(999)
-        .ticker("Fred")
-        .timeInForce(TIME_IN_FORCE.GTC)
-        .build();
-
-    Trade simpleLimitMarketTrade = Trade.builder()
-        .buyOrder(limitOrderA.getOrderId())
-        .sellOrder(marketOrderA.getOrderId())
-        .matchQuantity(999)
-        .matchPrice(3.14f)
-        .build();
-
     @Test
     public void testSimpleTimeStep() {
+
         Market market = new Market();
-        market.completeTimestep(limitOrderA);
-        market.completeTimestep(marketOrderA);
+
+        LimitOrder limitOrder = LimitOrder.builder()
+            .orderId(1)
+            .direction(DIRECTION.BUY)
+            .quantity(999)
+            .ticker("Fred")
+            .limit(3.14f)
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
+        MarketOrder marketOrder = MarketOrder.builder()
+            .orderId(2)
+            .direction(DIRECTION.SELL)
+            .quantity(999)
+            .ticker("Fred")
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
+        Trade tradeOutputTest = Trade.builder()
+            .buyOrder(1)
+            .sellOrder(2)
+            .matchQuantity(999)
+            .matchPrice(3.14f)
+            .build();
+
+        market.completeTimestep(limitOrder);
+        market.completeTimestep(marketOrder);
         List<Trade> trades = market.getAllResultingTrades();
-        Assert.assertTrue("Should be able to match a buy limit and sell market order",
-            trades.size() == 1 && trades.get(0).equals(simpleLimitMarketTrade));
+
+        Assert.assertTrue("Should be able to match a buy limit and sell market order", trades.size() == 1);
+        Assert.assertTrue("Should match should be correct", trades.get(0).equals(tradeOutputTest));
     }
-
-    LimitOrder limitOrderBMatchingA = LimitOrder.builder()
-        .orderId(newOrderID++)
-        .direction(DIRECTION.SELL)
-        .quantity(999)
-        .ticker("Fred")
-        .limit(2f)
-        .timeInForce(TIME_IN_FORCE.GTC)
-        .build();
-
-    Trade matchingLimitLimitTrade = Trade.builder()
-        .buyOrder(limitOrderA.getOrderId())
-        .sellOrder(limitOrderBMatchingA.getOrderId())
-        .matchQuantity(999)
-        .matchPrice(3.14f)
-        .build();
 
     @Test
     public void testTimeStepWithMatchingLimits() {
+
         Market market = new Market();
+
+        LimitOrder limitOrderA = LimitOrder.builder()
+            .orderId(1)
+            .direction(DIRECTION.BUY)
+            .quantity(999)
+            .ticker("Fred")
+            .limit(3.14f)
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
+        LimitOrder limitOrderBMatchingA = LimitOrder.builder()
+            .orderId(2)
+            .direction(DIRECTION.SELL)
+            .quantity(999)
+            .ticker("Fred")
+            .limit(2f)
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
+        Trade tradeOutputTest = Trade.builder()
+            .buyOrder(limitOrderA.getOrderId())
+            .sellOrder(limitOrderBMatchingA.getOrderId())
+            .matchQuantity(999)
+            .matchPrice(3.14f)
+            .build();
+
         market.completeTimestep(limitOrderA);
         market.completeTimestep(limitOrderBMatchingA);
         List<Trade> trades = market.getAllResultingTrades();
-        Assert.assertTrue("Should be able to match a buy and sell matching limit orders",
-            trades.size() == 1 && trades.get(0).equals(matchingLimitLimitTrade));
+
+        Assert.assertTrue("Should be able to match a buy and sell matching limit orders",trades.size() == 1);
+        Assert.assertTrue("Should match should be correct", trades.get(0).equals(tradeOutputTest));
     }
 
-    LimitOrder limitOrderCNotMatchingA = LimitOrder.builder()
-        .orderId(newOrderID++)
-        .direction(DIRECTION.SELL)
-        .quantity(999)
-        .ticker("Fred")
-        .limit(10f)
-        .timeInForce(TIME_IN_FORCE.GTC)
-        .build();
 
     @Test
     public void testTimeStepWithNonMatchingLimits() {
+
         Market market = new Market();
+
+        LimitOrder limitOrderA = LimitOrder.builder()
+            .orderId(1)
+            .direction(DIRECTION.BUY)
+            .quantity(999)
+            .ticker("Fred")
+            .limit(3.14f)
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
+        LimitOrder limitOrderBNotMatchingA = LimitOrder.builder()
+            .orderId(2)
+            .direction(DIRECTION.SELL)
+            .quantity(999)
+            .ticker("Fred")
+            .limit(10f)
+            .timeInForce(TIME_IN_FORCE.GTC)
+            .build();
+
         market.completeTimestep(limitOrderA);
-        market.completeTimestep(limitOrderCNotMatchingA);
+        market.completeTimestep(limitOrderBNotMatchingA);
         List<Trade> trades = market.getAllResultingTrades();
+
         Assert.assertTrue("Should not match a buy and sell non-matching limit orders",
             trades.size() == 0);
     }
