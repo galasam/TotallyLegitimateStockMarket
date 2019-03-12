@@ -12,7 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import DataObjects.ReadyOrder;
-import DataObjects.ReadyOrder.TIME_IN_FORCE;
 import DataObjects.LimitOrder;
 import DataObjects.MarketOrder;
 import DataObjects.Order;
@@ -21,7 +20,7 @@ import DataObjects.StopOrder;
 import DataObjects.Trade;
 import DataStructures.TickerData;
 
-class Market {
+public class Market {
 
     final private static Logger LOGGER = Logger.getLogger("MARKET_LOGGER");
 
@@ -29,11 +28,11 @@ class Market {
     private final Map<String, TickerData> tickerQueues = new TreeMap<>();
     private final List<StopOrder> stopOrders = new LinkedList<>();
 
-    Market() {
+    public Market() {
         LOGGER.finer("Creating Main.Market");
     }
 
-    void completeTimestep(Order order) {
+    public void completeTimestep(Order order) {
         LOGGER.finer("Processing Triggered Stop Orders");
         processOrder(order);
         processTriggeredStopOrders();
@@ -201,7 +200,7 @@ class Market {
         }
     }
 
-    List<Trade> getAllResultingTrades() {
+    public List<Trade> getAllResultingTrades() {
         return trades;
     }
 }
