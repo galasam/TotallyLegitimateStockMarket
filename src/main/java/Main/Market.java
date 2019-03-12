@@ -1,5 +1,7 @@
 package Main;
 
+import static Utils.MarketUtils.queueIfTimeInForce;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -117,12 +119,7 @@ class Market {
         LOGGER.finest("Checking Limit Order queue");
         if(limitOrders.isEmpty()) {
             LOGGER.finest("Limit Order queue empty, so check if time in force");
-            if(marketOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
-                LOGGER.finest("Time in force is GTC so add to queue");
-                marketOrders.add(marketOrder);
-            } else {
-                LOGGER.finest("Time in force is FOK so drop");
-            }
+            queueIfTimeInForce(marketOrder, marketOrders);
         } else {
             LimitOrder limitOrder = limitOrders.first();
             LOGGER.finest("Limit Order queue not empty, so trading with best limit order: " + limitOrder.toString());
@@ -201,18 +198,6 @@ class Market {
             MarketOrder marketOrder = marketOrders.first();
             marketOrders.remove(marketOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit(), tickerData);
-        }
-    }
-
-    private void queueIfTimeInForce(LimitOrder limitOrder,
-        SortedSet<LimitOrder> sameTypeLimitOrders) {
-        if(limitOrder.getTimeInForce().equals(TIME_IN_FORCE.GTC)) {
-            LOGGER.finest("Time in force is GTC so add to queue");
-            sameTypeLimitOrders.add(limitOrder);
-        } else if (limitOrder.getTimeInForce().equals(TIME_IN_FORCE.FOK)) {
-            LOGGER.finest("Time in force is FOK so drop");
-        } else {
-            throw new UnsupportedOperationException("TIME IN FORCE mode not supported");
         }
     }
 

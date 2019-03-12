@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.TreeSet;
 import DataObjects.LimitOrder;
 
-class LimitOrderQueue extends TreeSet<LimitOrder> {
+public class LimitOrderQueue extends TreeSet<LimitOrder> {
 
     public enum SORTING_METHOD {PRICE_ASC, PRICE_DECS}
 
@@ -30,7 +30,7 @@ class LimitOrderQueue extends TreeSet<LimitOrder> {
         }
     };
 
-    LimitOrderQueue(SORTING_METHOD method) {
+    public LimitOrderQueue(SORTING_METHOD method) {
         super(getComparator(method));
     }
 
