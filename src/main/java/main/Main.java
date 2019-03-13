@@ -1,9 +1,9 @@
-package Main;
+package main;
 
-import DataObjects.Order;
-import DataObjects.Trade;
-import Utils.CSV;
-import Utils.File;
+import dataObjects.Order;
+import dataObjects.Trade;
+import utils.CSV;
+import utils.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -48,13 +48,13 @@ public class Main implements ApplicationRunner{
             runTest(i++);
         }
 
-        //IntStream.range(1,12).forEach(Main.Main::runTest);
+        //IntStream.range(1,12).forEach(main.main::runTest);
         //runTest(8);
     }
 
     private static boolean testFileExists(int testNumber) {
         String filepath = getInputFilePath(testNumber);
-        return Utils.File.fileExists(filepath);
+        return utils.File.fileExists(filepath);
     }
 
     private static void runTest(int i) throws IOException {

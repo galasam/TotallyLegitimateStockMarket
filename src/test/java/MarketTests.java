@@ -1,9 +1,9 @@
-import DataObjects.LimitOrder;
-import DataObjects.MarketOrder;
-import DataObjects.ReadyOrder.DIRECTION;
-import DataObjects.ReadyOrder.TIME_IN_FORCE;
-import DataObjects.Trade;
-import Main.Market;
+import dataObjects.LimitOrder;
+import dataObjects.MarketOrder;
+import dataObjects.ReadyOrder.DIRECTION;
+import dataObjects.ReadyOrder.TIME_IN_FORCE;
+import dataObjects.Trade;
+import main.Market;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;

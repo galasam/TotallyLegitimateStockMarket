@@ -1,4 +1,4 @@
-package DataObjects;
+package dataObjects;
 
 public class Order {
 

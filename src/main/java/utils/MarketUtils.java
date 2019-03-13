@@ -1,7 +1,7 @@
-package Utils;
+package utils;
 
-import DataObjects.ReadyOrder;
-import DataObjects.ReadyOrder.TIME_IN_FORCE;
+import dataObjects.ReadyOrder;
+import dataObjects.ReadyOrder.TIME_IN_FORCE;
 import java.util.SortedSet;
 import lombok.extern.java.Log;
 

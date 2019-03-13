@@ -1,6 +1,6 @@
-package Main;
+package main;
 
-import static Utils.MarketUtils.queueIfTimeInForce;
+import static utils.MarketUtils.queueIfTimeInForce;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,14 +11,14 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import DataObjects.ReadyOrder;
-import DataObjects.LimitOrder;
-import DataObjects.MarketOrder;
-import DataObjects.Order;
-import DataObjects.ReadyOrder.DIRECTION;
-import DataObjects.StopOrder;
-import DataObjects.Trade;
-import DataStructures.TickerData;
+import dataObjects.ReadyOrder;
+import dataObjects.LimitOrder;
+import dataObjects.MarketOrder;
+import dataObjects.Order;
+import dataObjects.ReadyOrder.DIRECTION;
+import dataObjects.StopOrder;
+import dataObjects.Trade;
+import dataStructures.TickerData;
 
 public class Market {
 
@@ -29,7 +29,7 @@ public class Market {
     private final List<StopOrder> stopOrders = new LinkedList<>();
 
     public Market() {
-        LOGGER.finer("Creating Main.Market");
+        LOGGER.finer("Creating main.Market");
     }
 
     public void completeTimestep(Order order) {
@@ -173,9 +173,9 @@ public class Market {
         SortedSet<MarketOrder> marketOrders,
         SortedSet<LimitOrder> sameTypeLimitOrders,
         SortedSet<LimitOrder> oppositeTypeLimitOrders) {
-        LOGGER.finest("Checking Main.Market Order queue");
+        LOGGER.finest("Checking main.Market Order queue");
         if(marketOrders.isEmpty()) {
-            LOGGER.finest("Main.Market Order queue empty, so checking Limit orders");
+            LOGGER.finest("main.Market Order queue empty, so checking Limit orders");
             if(oppositeTypeLimitOrders.isEmpty()) {
                 LOGGER.finest("Limit Order queue empty, so check if time in force");
                 queueIfTimeInForce(limitOrder, sameTypeLimitOrders);
@@ -193,7 +193,7 @@ public class Market {
                 }
             }
         } else {
-            LOGGER.finest("Main.Market Order queue not empty, so trading with oldest order: " + limitOrder.toString());
+            LOGGER.finest("main.Market Order queue not empty, so trading with oldest order: " + limitOrder.toString());
             MarketOrder marketOrder = marketOrders.first();
             marketOrders.remove(marketOrder);
             makeTrade(marketOrder, limitOrder, limitOrder.getLimit(), tickerData);

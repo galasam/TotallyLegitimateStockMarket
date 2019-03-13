@@ -1,9 +1,9 @@
-import static Utils.MarketUtils.queueIfTimeInForce;
+import static utils.MarketUtils.queueIfTimeInForce;
 
-import DataObjects.LimitOrder;
-import DataObjects.ReadyOrder.TIME_IN_FORCE;
-import DataStructures.LimitOrderQueue;
-import DataStructures.LimitOrderQueue.SORTING_METHOD;
+import dataObjects.LimitOrder;
+import dataObjects.ReadyOrder.TIME_IN_FORCE;
+import dataStructures.LimitOrderQueue;
+import dataStructures.LimitOrderQueue.SORTING_METHOD;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.junit.Assert;
