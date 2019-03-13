@@ -5,8 +5,24 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.galatea.galasam</groupId>
-  <artifactId>TotallyLegitimateSotckMarketWithMaven</artifactId>
+  <artifactId>TotallyLegitimateStockMarketWithMaven</artifactId>
   <version>1</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
